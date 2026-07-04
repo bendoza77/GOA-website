@@ -1,0 +1,63 @@
+/* ============================================================
+   GOA · Typography
+   Display: Space Grotesk  ·  Body: Inter  ·  Mono: JetBrains Mono
+   Fonts loaded via <link> in index.html for zero-flash rendering.
+   ============================================================ */
+
+.font-display { font-family: var(--font-display); }
+.font-sans    { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* Fluid heading scale ---------------------------------------- */
+.h-hero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  font-family: var(--font-sans);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-mist);
+}
+
+/* Small uppercase eyebrow / kicker --------------------------- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-lime);
+}
+
+/* Balance headline wrapping where supported */
+.text-balance { text-wrap: balance; }
+.text-pretty  { text-wrap: pretty; }

@@ -1,0 +1,97 @@
+/** Course catalogue. Consumed by Home preview + /courses page. */
+export const COURSES = [
+  {
+    id: "frontend-architect",
+    title: "Front-End Architect",
+    level: "Intermediate",
+    duration: "16 weeks",
+    lessons: 148,
+    tag: "Most popular",
+    accent: "green",
+    icon: "LayoutTemplate",
+    blurb:
+      "Master React 19, design systems, animation and performance to build interfaces that win awards.",
+    stack: ["React", "Tailwind", "Framer Motion", "Vite"],
+    price: "$1,490",
+  },
+  {
+    id: "fullstack-engineer",
+    title: "Full-Stack Engineer",
+    level: "Beginner → Job-ready",
+    duration: "28 weeks",
+    lessons: 260,
+    tag: "Career track",
+    accent: "lime",
+    icon: "Layers",
+    blurb:
+      "Go from first line of code to deploying full products across the modern web stack.",
+    stack: ["Node", "React", "Postgres", "Edge"],
+    price: "$2,890",
+  },
+  {
+    id: "ai-engineering",
+    title: "AI Application Engineering",
+    level: "Advanced",
+    duration: "12 weeks",
+    lessons: 96,
+    tag: "New",
+    accent: "neon",
+    icon: "BrainCircuit",
+    blurb:
+      "Ship AI-native products: RAG, agents, evals and tool-use with production guardrails.",
+    stack: ["LLMs", "RAG", "Agents", "Vector DB"],
+    price: "$1,990",
+  },
+  {
+    id: "cloud-devops",
+    title: "Cloud & DevOps",
+    level: "Intermediate",
+    duration: "14 weeks",
+    lessons: 120,
+    tag: "In demand",
+    accent: "green",
+    icon: "Cloud",
+    blurb:
+      "Containers, CI/CD, observability and infrastructure-as-code the way real teams run it.",
+    stack: ["Docker", "K8s", "Terraform", "CI/CD"],
+    price: "$1,690",
+  },
+  {
+    id: "mobile-react-native",
+    title: "Mobile with React Native",
+    level: "Intermediate",
+    duration: "12 weeks",
+    lessons: 104,
+    tag: "Cross-platform",
+    accent: "lime",
+    icon: "Smartphone",
+    blurb:
+      "One codebase, native feel. Design, build and publish polished iOS + Android apps.",
+    stack: ["Expo", "React Native", "Reanimated"],
+    price: "$1,490",
+  },
+  {
+    id: "data-structures",
+    title: "DSA & Interview Prep",
+    level: "All levels",
+    duration: "8 weeks",
+    lessons: 72,
+    tag: "Get hired",
+    accent: "neon",
+    icon: "Binary",
+    blurb:
+      "The patterns, not the memorisation. Crack technical interviews with structured practice.",
+    stack: ["Algorithms", "System Design", "Mock"],
+    price: "$990",
+  },
+];
+
+export const COURSE_CATEGORIES = [
+  "All",
+  "Front-End",
+  "Full-Stack",
+  "AI",
+  "Cloud",
+  "Mobile",
+  "Interview",
+];

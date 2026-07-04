@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@import "./styles/variables.css";
+@import "./styles/typography.css";
+@import "./styles/animations.css";
+@import "./styles/globals.css";
+
+/* ============================================================
+   GOA · Tailwind v4 Theme — canonical design tokens.
+   Green + Black identity drawn from the pixel/matrix logo.
+   Generates utilities: bg-green, text-neon, border-lime, etc.
+   ============================================================ */
+@theme {
+  /* Neutrals — deep green-blacks → soft greens/whites */
+  --color-void: #030603;
+  --color-ink: #060b07;
+  --color-carbon: #0a110c;
+  --color-graphite: #121a14;
+  --color-slate-line: #1b241d;
+  --color-ash: #2b3a2f;
+  --color-fog: #7c8a80;
+  --color-mist: #b9c6bd;
+  --color-snow: #eef4ef;
+
+  /* Brand greens */
+  --color-moss: #0e3a22;
+  --color-forest: #12693a;
+  --color-green: #2fbf5f;   /* GOA primary green */
+  --color-lime: #57e08a;
+  --color-neon: #7dff9e;    /* neon accent */
+
+  /* Foreground that sits on green accents — stays dark in BOTH themes
+     (never overridden) so buttons/avatars keep legible contrast. */
+  --color-accent-ink: #05140b;
+
+  /* Fonts */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Radii */
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+
+  /* Extend default breakpoints subtly */
+  --breakpoint-xs: 30rem;
+
+  /* Custom easing available to Tailwind transition utilities */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================================
+   LIGHT THEME · token remap
+   Higher specificity (:root[data-theme=light]) wins over the
+   @theme :root defaults, so every color utility flips
+   automatically. Neutrals invert (deep green-black to soft
+   off-white). Brand greens deepen to stay readable on white —
+   neon glow gives way to crisp emerald ink.
+   ============================================================ */
+:root[data-theme="light"] {
+  /* Neutrals — inverted, keeping a faint green warmth */
+  --color-void: #f4f8f5;    /* page background */
+  --color-ink: #eef3ef;     /* footer / recessed bands */
+  --color-carbon: #ffffff;  /* raised card base */
+  --color-graphite: #f1f5f2;
+  --color-slate-line: #dde5df;
+  --color-ash: #c2cec5;
+  --color-fog: #56655b;     /* muted text — ~5:1 on white */
+  --color-mist: #33413a;    /* body / secondary text */
+  --color-snow: #0b1510;    /* headings / primary text */
+
+  /* Brand greens — deeper so they read as text on light surfaces */
+  --color-moss: #d9f2e3;
+  --color-forest: #15803d;
+  --color-green: #16a34a;   /* primary */
+  --color-lime: #0d8f3f;    /* text-safe accent */
+  --color-neon: #0a7d37;    /* deepest accent */
+}
+
+/* ============================================================
+   Custom theme-aware utilities (Tailwind v4 @utility → variant-
+   friendly). Replace hardcoded bg-white/[..] overlays so subtle
+   surfaces stay visible in light mode.
+   ============================================================ */
+@utility surface {
+  background-color: var(--surface-1);
+}
+@utility surface-2 {
+  background-color: var(--surface-2);
+}
+@utility surface-3 {
+  background-color: var(--surface-3);
+}
+@utility hairline {
+  border-color: var(--hairline);
+}
