@@ -1,3 +1,4 @@
+import ScrollJourney from "../../components/3d/scroll/ScrollJourney.jsx";
 import Hero from "../../components/sections/Hero.jsx";
 import PartnersMarquee from "../../components/sections/PartnersMarquee.jsx";
 import FeaturesSection from "../../components/sections/FeaturesSection.jsx";
@@ -16,6 +17,8 @@ import CTASection from "../../components/sections/CTASection.jsx";
  */
 const Home = () => (
   <>
+    {/* Scroll-driven 3D story — fixed canvas behind all Home sections */}
+    <ScrollJourney />
     <Hero />
     <PartnersMarquee />
     <FeaturesSection />

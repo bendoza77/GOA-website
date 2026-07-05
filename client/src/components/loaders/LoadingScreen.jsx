@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { markIntroDone } from "../../utils/introGate.js";
 import { LogoMark } from "../ui/Logo.jsx";
 
 const SESSION_KEY = "goa-intro-shown";
@@ -26,7 +27,10 @@ const LoadingScreen = ({ minDuration = 1400 }) => {
   const counterRef = useRef(null);
 
   useEffect(() => {
-    if (done) return;
+    if (done) {
+      markIntroDone(); // loader skipped this session — page is ready now
+      return;
+    }
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
@@ -44,7 +48,12 @@ const LoadingScreen = ({ minDuration = 1400 }) => {
         counterRef.current.textContent = `${String(progress).padStart(3, "0")}% · INITIALISING`;
       }
       if (t < 1) raf = requestAnimationFrame(tick);
-      else setTimeout(() => setDone(true), 220);
+      else {
+        setTimeout(() => {
+          markIntroDone(); // hero entrance starts as the overlay wipes away
+          setDone(true);
+        }, 220);
+      }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);

@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { HERO_STATS } from "../../data/stats.js";
 import { staggerContainer, fadeUp } from "../../utils/motion.js";
+import { onIntroDone } from "../../utils/introGate.js";
 import Badge from "../ui/Badge.jsx";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
@@ -9,14 +11,38 @@ import HeroRobot from "../3d/HeroRobot.jsx";
 import ParticleField from "../backgrounds/ParticleField.jsx";
 import AnimatedGrid from "../backgrounds/AnimatedGrid.jsx";
 
+/* Play the entrance once per full page load (fresh visit or refresh) —
+   SPA navigations back to Home show the hero settled, not replaying. */
+let entrancePlayed = false;
+
 /**
  * Hero — the visual identity of GOA. Split layout: value proposition + CTAs +
  * live stats on the left, interactive 3D focal point on the right, over a
  * perspective matrix grid and drifting particle network.
  *
+ * The entrance (text rising bottom→top, staggered) is held until the intro
+ * LoadingScreen wipes away, so on first visit/refresh the user actually sees
+ * it instead of it finishing under the overlay.
+ *
  * To wire a real Spline model, pass a scene URL to <HeroRobot scene="..." />.
  */
-const Hero = () => (
+const Hero = () => {
+  // "static" → already played this load; "wait" → hold hidden until intro
+  // clears; "play" → run the entrance now. The entrance must always start in
+  // "wait" and flip via state: the layout's <AnimatePresence initial={false}>
+  // suppresses mount-time initial animations, so only an animate-prop change
+  // reliably triggers the rise.
+  const [phase, setPhase] = useState(() => (entrancePlayed ? "static" : "wait"));
+
+  useEffect(() => {
+    entrancePlayed = true;
+    if (phase === "wait") return onIntroDone(() => setPhase("play"));
+  }, [phase]);
+
+  const isStatic = phase === "static";
+  const show = phase !== "wait";
+
+  return (
   <section className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16 sm:pt-32">
     {/* Local ambience layered above the global backdrop */}
     <AnimatedGrid perspective className="opacity-70" />
@@ -26,8 +52,8 @@ const Hero = () => (
       {/* Left — copy */}
       <motion.div
         variants={staggerContainer(0.12)}
-        initial="hidden"
-        animate="show"
+        initial={isStatic ? false : "hidden"}
+        animate={show ? "show" : "hidden"}
         className="flex flex-col items-start gap-6"
       >
         <motion.div variants={fadeUp}>
@@ -78,8 +104,8 @@ const Hero = () => (
 
       {/* Right — 3D focal point */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={isStatic ? false : { opacity: 0, scale: 0.9 }}
+        animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         className="relative mx-auto h-[360px] w-full max-w-lg sm:h-[460px] lg:h-[560px]"
       >
@@ -89,9 +115,9 @@ const Hero = () => (
 
     {/* Scroll cue */}
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1.2 }}
+      initial={isStatic ? false : { opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      transition={{ delay: isStatic ? 0 : 1.2 }}
       className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-fog sm:flex"
     >
       <span className="font-mono text-[0.6rem] uppercase tracking-[0.3em]">Scroll</span>
@@ -103,6 +129,7 @@ const Hero = () => (
       </span>
     </motion.div>
   </section>
-);
+  );
+};
 
 export default Hero;

@@ -37,6 +37,12 @@ Install `playwright-core` in a scratchpad dir, not in the repo.
 - **Custom cursor**: ring (`div[class*="z-[9999]"]`) must have a centered
   `translate3d` transform even with zero mouse input, and track `page.mouse.move`.
 - **Theme toggle**: `button[aria-label*="mode"]` flips `<html data-theme>`.
+- **3D scroll journey (Home)**: fixed `canvas[class*="-z-"]` mounts ~1–2.5s
+  after load (idle-deferred three.js chunk `journeyEngine-*`); canvas pixels
+  must differ across scroll fractions 0/.25/.5/.75/1 (scroll-driven story);
+  canvas is removed on navigation to another route and remounts on return;
+  `reducedMotion: "reduce"` context must never mount it; theme toggle
+  recolours the scene.
 - Watch `page.on("console")` + `pageerror` — the app should log zero errors.
 
 ## Gotchas
