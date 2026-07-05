@@ -47,4 +47,22 @@ export function useScroll(threshold = 24) {
   return state;
 }
 
+/**
+ * useScrolled — lean variant for components that only care whether the page
+ * is past a threshold (e.g. the navbar background). Re-renders exactly when
+ * the boolean flips instead of on every scroll frame.
+ */
+export function useScrolled(threshold = 24) {
+  const [scrolled, setScrolled] = useState(window.scrollY > threshold);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [threshold]);
+
+  return scrolled;
+}
+
 export default useScroll;

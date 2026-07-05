@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { SplineScene } from "@/components/ui/splite";
+import SplineScene from "../3d/SplineScene.jsx";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import Section from "../layout/Section.jsx";

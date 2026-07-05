@@ -1,7 +1,8 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { NAV_LINKS } from "../../constants/site.js";
-import { useScroll } from "../../hooks/useScroll.js";
+import { useScrolled } from "../../hooks/useScroll.js";
+import { prefetchRoute } from "../../routes/AppRoutes.jsx";
 import { useNavigationContext } from "../../context/NavigationContext.jsx";
 import { cn } from "../../utils/cn.js";
 import Logo from "../ui/Logo.jsx";
@@ -15,7 +16,7 @@ import MobileMenu from "./MobileMenu.jsx";
  * fades into a blurred bar on scroll. Active route gets a shared-layout pill.
  */
 const Navbar = () => {
-  const { scrolled } = useScroll(20);
+  const scrolled = useScrolled(20);
   const { isMenuOpen, toggleMenu } = useNavigationContext();
   const { pathname } = useLocation();
 
@@ -43,6 +44,8 @@ const Navbar = () => {
                 <li key={link.path}>
                   <NavLink
                     to={link.path}
+                    onMouseEnter={() => prefetchRoute(link.path)}
+                    onFocus={() => prefetchRoute(link.path)}
                     className={cn(
                       "relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200",
                       active ? "text-snow" : "text-fog hover:text-mist"

@@ -13,14 +13,19 @@
   50%      { transform: translateY(-26px) rotate(4deg); }
 }
 
+/* Opacity-only pulse — animating filter/blur re-rasterizes huge layers every
+   frame; the static blur lives on .glow-orb and only opacity animates. */
 @keyframes goa-pulse-glow {
-  0%, 100% { opacity: 0.55; filter: blur(60px); }
-  50%      { opacity: 0.9;  filter: blur(72px); }
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.9; }
 }
 
+/* Grid pan via transform (compositor-only). The panning layer is oversized
+   by one 48px tile above, so a 0→48px translate loops seamlessly without
+   the per-frame repaints background-position animation causes. */
 @keyframes goa-grid-pan {
-  0%   { background-position: 0 0; }
-  100% { background-position: 0 48px; }
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(48px); }
 }
 
 @keyframes goa-scanline {
@@ -50,6 +55,14 @@
 @keyframes goa-marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+/* Parameterised bob/tilt loop for ambient 3D objects. Runs on the compositor
+   (browsers skip it entirely off-screen) instead of a per-frame JS loop.
+   Tune per element with --drift-y / --drift-r. */
+@keyframes goa-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(var(--drift-y, -12px)) rotate(var(--drift-r, 0deg)); }
 }
 
 @keyframes goa-ripple {

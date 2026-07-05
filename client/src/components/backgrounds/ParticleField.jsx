@@ -49,31 +49,41 @@ const ParticleField = ({ className, density = 0.00008, linkDistance = 130 }) => 
       }));
     };
 
+    const nodeFill = `rgba(${nodeColor}, 0.55)`;
+    const linkDistSq = linkDistance * linkDistance;
+
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
+
+      // Nodes — one path, one fill (style changes and fills are the slow part)
+      ctx.fillStyle = nodeFill;
+      ctx.beginPath();
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
-
-        ctx.beginPath();
+        ctx.moveTo(p.x + p.r, p.y);
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${nodeColor}, 0.55)`;
-        ctx.fill();
+      }
+      ctx.fill();
 
+      // Links — squared-distance cull so the sqrt only runs for close pairs
+      ctx.lineWidth = 1;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
           const dx = p.x - q.x;
           const dy = p.y - q.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < linkDistance) {
+          const distSq = dx * dx + dy * dy;
+          if (distSq < linkDistSq) {
+            const dist = Math.sqrt(distSq);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
             ctx.strokeStyle = `rgba(${linkColor}, ${0.14 * (1 - dist / linkDistance)})`;
-            ctx.lineWidth = 1;
             ctx.stroke();
           }
         }

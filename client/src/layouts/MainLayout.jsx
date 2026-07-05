@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import PageLoader from "../components/loaders/PageLoader.jsx";
 import Navbar from "../components/navigation/Navbar.jsx";
 import Footer from "../components/layout/Footer.jsx";
 import ScrollProgress from "../components/navigation/ScrollProgress.jsx";
@@ -32,7 +34,9 @@ const MainLayout = () => {
           exit={pageTransition.exit}
           className="flex-1"
         >
-          {outlet}
+          {/* Inner boundary: if a route chunk ever isn't prefetched yet, only
+              the page area falls back — navbar/footer/backdrop stay put. */}
+          <Suspense fallback={<PageLoader />}>{outlet}</Suspense>
         </motion.main>
       </AnimatePresence>
 

@@ -1,28 +1,54 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { LogoMark } from "../ui/Logo.jsx";
 
+const SESSION_KEY = "goa-intro-shown";
+
+const wasIntroShown = () => {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
 /**
  * LoadingScreen — first-paint intro overlay. Counts to 100 while the app
- * mounts, then wipes away to reveal the site. Shows once per session.
+ * mounts, then wipes away to reveal the site. Shows once per session —
+ * reloads and return visits within the tab skip straight to the page.
+ *
+ * The counter/bar are driven by direct DOM writes from a single rAF loop
+ * (no per-frame React re-renders), so the app hydrates undisturbed under it.
  */
 const LoadingScreen = ({ minDuration = 1400 }) => {
-  const [progress, setProgress] = useState(0);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(wasIntroShown);
+  const barRef = useRef(null);
+  const counterRef = useRef(null);
 
   useEffect(() => {
+    if (done) return;
+    try {
+      sessionStorage.setItem(SESSION_KEY, "1");
+    } catch {
+      /* private mode — intro will simply replay next load */
+    }
+
     const start = performance.now();
     let raf;
     const tick = (now) => {
       const t = Math.min((now - start) / minDuration, 1);
       const eased = 1 - Math.pow(1 - t, 3);
-      setProgress(Math.round(eased * 100));
+      const progress = Math.round(eased * 100);
+      if (barRef.current) barRef.current.style.width = `${progress}%`;
+      if (counterRef.current) {
+        counterRef.current.textContent = `${String(progress).padStart(3, "0")}% · INITIALISING`;
+      }
       if (t < 1) raf = requestAnimationFrame(tick);
       else setTimeout(() => setDone(true), 220);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [minDuration]);
+  }, [done, minDuration]);
 
   return (
     <AnimatePresence>
@@ -48,13 +74,14 @@ const LoadingScreen = ({ minDuration = 1400 }) => {
 
             {/* Progress bar */}
             <div className="h-[3px] w-56 overflow-hidden rounded-full bg-graphite">
-              <motion.div
+              <div
+                ref={barRef}
                 className="h-full rounded-full bg-gradient-to-r from-green to-neon"
-                style={{ width: `${progress}%` }}
+                style={{ width: "0%" }}
               />
             </div>
-            <div className="font-mono text-xs tracking-[0.3em] text-fog">
-              {String(progress).padStart(3, "0")}% · INITIALISING
+            <div ref={counterRef} className="font-mono text-xs tracking-[0.3em] text-fog">
+              000% · INITIALISING
             </div>
           </div>
         </motion.div>

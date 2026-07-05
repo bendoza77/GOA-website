@@ -23,7 +23,22 @@ const Cursor = () => {
 
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const ring = { x: target.x, y: target.y };
-    let raf;
+    let raf = 0;
+
+    const render = () => {
+      const el = ringRef.current;
+      ring.x += (target.x - ring.x) * 0.18;
+      ring.y += (target.y - ring.y) * 0.18;
+      if (el) {
+        el.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0) translate(-50%, -50%)`;
+      }
+      // Park the loop once the ring exists and has settled on the pointer;
+      // mousemove wakes it again. (Never park before the ref attaches — the
+      // first frames run while the component is still mounting.)
+      const settled =
+        el && Math.abs(target.x - ring.x) < 0.1 && Math.abs(target.y - ring.y) < 0.1;
+      raf = settled ? 0 : requestAnimationFrame(render);
+    };
 
     const onMove = (e) => {
       target.x = e.clientX;
@@ -31,15 +46,7 @@ const Cursor = () => {
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
       }
-    };
-
-    const render = () => {
-      ring.x += (target.x - ring.x) * 0.18;
-      ring.y += (target.y - ring.y) * 0.18;
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0) translate(-50%, -50%)`;
-      }
-      raf = requestAnimationFrame(render);
+      if (!raf) raf = requestAnimationFrame(render);
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });

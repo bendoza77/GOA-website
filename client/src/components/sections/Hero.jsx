@@ -96,10 +96,9 @@ const Hero = () => (
     >
       <span className="font-mono text-[0.6rem] uppercase tracking-[0.3em]">Scroll</span>
       <span className="flex h-9 w-5 items-start justify-center rounded-full border border-slate-line p-1">
-        <motion.span
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        <span
           className="size-1.5 rounded-full bg-lime"
+          style={{ "--drift-y": "12px", animation: "goa-drift 1.6s ease-in-out infinite" }}
         />
       </span>
     </motion.div>
