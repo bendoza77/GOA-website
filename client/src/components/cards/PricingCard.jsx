@@ -8,6 +8,7 @@ import { cn } from "../../utils/cn.js";
 const PricingCard = ({ plan }) => (
   <GlassPanel
     hover
+    tilt
     className={cn(
       "group relative flex h-full flex-col p-8",
       plan.featured && "border-neon/30 ring-neon"

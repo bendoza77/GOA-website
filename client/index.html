@@ -17,6 +17,11 @@
          display=swap shows real text immediately with the fallback stack. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Spline scene CDN — warm the TLS handshake early; the .splinecode
+         itself is fetched lazily (idle warmup / near-viewport). -->
+    <link rel="preconnect" href="https://prod.spline.design" crossorigin />
+    <link rel="dns-prefetch" href="https://prod.spline.design" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"

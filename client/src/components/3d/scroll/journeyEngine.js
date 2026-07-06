@@ -78,6 +78,9 @@ const G_POS = new Vector3(7.8, -0.5, -31.5);
 /* The GOA pixel mark, as a cube grid (1 = cube). */
 const G_GRID = ["11111", "10000", "10011", "10001", "11111"];
 
+/* Opacities are tuned for copy legibility: the scene plays behind text on
+   every Home section, so the brightest elements (stars, code panels, nodes)
+   stay below the threshold where they compete with body text. */
 const THEMES = {
   dark: {
     star: "#7dff9e",
@@ -87,9 +90,9 @@ const THEMES = {
     panel: "#ffffff",
     path: "#7dff9e",
     cube: "#57e08a",
-    starOpacity: 0.75,
-    panelOpacity: 0.5,
-    nodeOpacity: 0.9,
+    starOpacity: 0.55,
+    panelOpacity: 0.35,
+    nodeOpacity: 0.7,
     coreInnerOpacity: 0.28,
     dim: 1, // master multiplier for scroll-driven opacities
   },
@@ -101,9 +104,9 @@ const THEMES = {
     panel: "#ffffff",
     path: "#0d8f3f",
     cube: "#16a34a",
-    starOpacity: 0.4,
-    panelOpacity: 0.28,
-    nodeOpacity: 0.4,
+    starOpacity: 0.3,
+    panelOpacity: 0.2,
+    nodeOpacity: 0.3,
     coreInnerOpacity: 0.1,
     dim: 0.5,
   },

@@ -7,7 +7,7 @@ import { cn } from "../../utils/cn.js";
 const BlogCard = ({ post }) => {
   const a = accent(post.accent);
   return (
-    <GlassPanel hover className="group flex h-full flex-col overflow-hidden">
+    <GlassPanel hover tilt className="group flex h-full flex-col overflow-hidden">
       {/* Gradient cover with pixel grid + category glyph */}
       <div className={cn("relative h-40 overflow-hidden bg-gradient-to-br", a.gradient)}>
         <div className="absolute inset-0 bg-grid opacity-30" />

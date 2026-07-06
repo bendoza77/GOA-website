@@ -9,7 +9,8 @@ import { SITE, SOCIALS } from "../../constants/site.js";
 import { FAQS } from "../../data/faq.js";
 import Accordion from "../../components/ui/Accordion.jsx";
 import Reveal from "../../components/ui/Reveal.jsx";
-import { staggerContainer, fadeUp } from "../../utils/motion.js";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
+import { staggerContainer, slideInLeft, slideInRight } from "../../utils/motion.js";
 
 const CONTACT_METHODS = [
   { icon: "Mail", label: "Email us", value: SITE.email, href: `mailto:${SITE.email}` },
@@ -20,6 +21,8 @@ const CONTACT_METHODS = [
 /** Contact — enquiry form, direct channels and a compact FAQ. */
 const Contact = () => (
   <>
+    {/* Page ambience — the broadcasting signal core + satellite */}
+    <AmbientScene scene="contact" />
     <PageHeader
       eyebrow="Say hello"
       title="Let's talk about your"
@@ -37,8 +40,8 @@ const Contact = () => (
           className="flex flex-col gap-4"
         >
           {CONTACT_METHODS.map((m) => (
-            <motion.div key={m.label} variants={fadeUp}>
-              <GlassPanel hover as={m.href ? "a" : "div"} {...(m.href ? { href: m.href } : {})} className="flex items-center gap-4 p-6">
+            <motion.div key={m.label} variants={slideInLeft}>
+              <GlassPanel hover tilt as={m.href ? "a" : "div"} {...(m.href ? { href: m.href } : {})} className="flex items-center gap-4 p-6">
                 <span className="grid size-12 shrink-0 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
                   <Icon name={m.icon} className="size-5" />
                 </span>
@@ -50,7 +53,7 @@ const Contact = () => (
             </motion.div>
           ))}
 
-          <motion.div variants={fadeUp}>
+          <motion.div variants={slideInLeft}>
             <GlassPanel className="p-6">
               <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fog">Follow along</p>
               <div className="flex flex-wrap gap-3">
@@ -72,7 +75,7 @@ const Contact = () => (
         </motion.div>
 
         {/* Right — form */}
-        <Reveal delay={0.1}>
+        <Reveal delay={0.1} variants={slideInRight}>
           <ContactForm />
         </Reveal>
       </div>

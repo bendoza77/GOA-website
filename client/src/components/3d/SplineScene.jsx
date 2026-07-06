@@ -1,9 +1,12 @@
 import { Component, lazy, Suspense, useEffect, useRef, useState } from "react";
 import { cn } from "../../utils/cn.js";
 import { useNearViewport } from "../../hooks/useNearViewport.js";
+import { isLowEndDevice } from "../../utils/splineWarmup.js";
 import SceneLoader from "./SceneLoader.jsx";
 
-/* Lazy-load the (heavy) Spline runtime only when a scene is actually used. */
+/* Lazy-load the (heavy) Spline runtime only when a scene is actually used.
+   Shares the module cache with warmSplineScene(), so a warmed page resolves
+   this instantly with the parse cost already paid during idle time. */
 const Spline = lazy(() => import("@splinetool/react-spline"));
 
 /**
@@ -28,23 +31,47 @@ class SplineErrorBoundary extends Component {
 /**
  * SplineScene — reusable, lazy-loaded 3D scene wrapper.
  *
- * The multi-MB Spline runtime is fetched only once the scene container
- * approaches the viewport (useNearViewport), so it never competes with the
- * initial page load. Until then only the lightweight loader renders.
+ * Loading is staged to keep scene construction (the one cost warmup can't
+ * pay in advance: scene graph build + shader compile) off the scroll path:
+ *
+ *  1. nothing heavy renders until the container is within ~1600px of the
+ *     viewport (≈1.5 screens — early enough to finish before it's visible);
+ *  2. once near, the actual mount waits for a scroll lull (idle callback,
+ *     short timeout) instead of landing mid-scroll-frame;
+ *  3. low-end / data-saver devices skip the multi-MB runtime entirely and
+ *     render the CSS `fallback` — same visual language, none of the cost.
+ *
+ * After load, an IntersectionObserver pauses the whole Spline app whenever
+ * the scene is off-screen (its initial callback also stops scenes that
+ * finish loading before being scrolled to), so the robot never taxes the
+ * rest of the page.
  *
  * Props:
  *  - scene:     Spline .splinecode URL (optional). Omit to render `fallback`.
  *  - className: sizing wrapper classes.
  *  - loading:   custom loader node (defaults to <SceneLoader/>).
- *  - fallback:  node rendered if 3D can't load (defaults to `fallback` prop).
+ *  - fallback:  node rendered if 3D can't/shouldn't load.
  *  - onLoad:    callback when the scene finishes loading.
  *
  * JavaScript only — no TypeScript, per project standard.
  */
 const SplineScene = ({ scene, className, loading, fallback = null, onLoad, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
-  const [containerRef, near] = useNearViewport();
+  const [engaged, setEngaged] = useState(false); // near + idle → safe to mount
+  const [containerRef, near] = useNearViewport({ margin: "1600px" });
   const appRef = useRef(null);
+
+  /* Stage 2: once near, wait for a lull in main-thread work before mounting
+     the runtime so scene build + shader compile never land mid-scroll. */
+  useEffect(() => {
+    if (!near || engaged) return;
+    if ("requestIdleCallback" in window) {
+      const id = requestIdleCallback(() => setEngaged(true), { timeout: 900 });
+      return () => cancelIdleCallback(id);
+    }
+    const id = setTimeout(() => setEngaged(true), 200);
+    return () => clearTimeout(id);
+  }, [near, engaged]);
 
   /* The Spline runtime keeps rendering (and re-rendering on every mousemove,
      since scenes track the pointer) even when scrolled out of sight, which
@@ -67,8 +94,8 @@ const SplineScene = ({ scene, className, loading, fallback = null, onLoad, ...re
     return () => io.disconnect();
   }, [loaded, containerRef]);
 
-  // No scene provided → render the graceful visual fallback directly.
-  if (!scene) {
+  // No scene, or a device that shouldn't pay for one → graceful fallback.
+  if (!scene || isLowEndDevice()) {
     return <div className={cn("relative", className)}>{fallback}</div>;
   }
 
@@ -81,12 +108,13 @@ const SplineScene = ({ scene, className, loading, fallback = null, onLoad, ...re
   return (
     <div ref={containerRef} className={cn("relative", className)}>
       <SplineErrorBoundary fallback={fallback}>
-        {near ? (
+        {engaged ? (
           <Suspense fallback={loading ?? <SceneLoader />}>
             {!loaded && (loading ?? <SceneLoader />)}
             <Spline
               scene={scene}
               onLoad={handleLoad}
+              renderOnDemand
               className={cn(
                 "!h-full !w-full transition-opacity duration-700",
                 loaded ? "opacity-100" : "opacity-0"

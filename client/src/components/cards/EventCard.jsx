@@ -10,7 +10,7 @@ const EventCard = ({ event }) => {
   const a = accent(event.accent);
   const [month, day] = event.date.split(" ");
   return (
-    <GlassPanel hover className="group flex h-full flex-col p-6 sm:flex-row sm:gap-6">
+    <GlassPanel hover tilt className="group flex h-full flex-col p-6 sm:flex-row sm:gap-6">
       {/* Date block */}
       <div className={cn("mb-4 flex shrink-0 flex-col items-center justify-center rounded-xl border p-4 sm:mb-0 sm:w-24", a.border, a.bg)}>
         <span className={cn("font-mono text-xs uppercase tracking-widest", a.text)}>{month}</span>

@@ -8,7 +8,7 @@ import { cn } from "../../utils/cn.js";
 const MentorCard = ({ mentor }) => {
   const a = accent(mentor.accent);
   return (
-    <GlassPanel hover className="group flex h-full flex-col items-center p-7 text-center">
+    <GlassPanel hover tilt className="group flex h-full flex-col items-center p-7 text-center">
       <div className="relative mb-5">
         <div className={cn("absolute -inset-2 rounded-full opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-60", a.bg)} />
         <Avatar initials={mentor.initials} accent={mentor.accent} size="xl" className="relative transition-transform duration-500 group-hover:scale-105" />

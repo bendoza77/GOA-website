@@ -9,7 +9,7 @@ import { cn } from "../../utils/cn.js";
 const CourseCard = ({ course }) => {
   const a = accent(course.accent);
   return (
-    <GlassPanel hover className={cn("group flex h-full flex-col p-6", a.glow)}>
+    <GlassPanel hover tilt className={cn("group flex h-full flex-col p-6", a.glow)}>
       <div className="mb-5 flex items-start justify-between">
         <div
           className={cn(

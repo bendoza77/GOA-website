@@ -6,8 +6,9 @@ import SectionTitle from "../../components/ui/SectionTitle.jsx";
 import CourseCard from "../../components/cards/CourseCard.jsx";
 import PricingCard from "../../components/cards/PricingCard.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { COURSES, COURSE_CATEGORIES } from "../../data/courses.js";
-import { staggerContainer, fadeUp, viewportOnce } from "../../utils/motion.js";
+import { staggerContainer, fadeUp, depthIn, viewportOnce } from "../../utils/motion.js";
 import { cn } from "../../utils/cn.js";
 
 const PLANS = [
@@ -50,6 +51,8 @@ const Courses = () => {
 
   return (
     <>
+      {/* Page ambience — the curriculum helix of floating books */}
+      <AmbientScene scene="courses" />
       <PageHeader
         eyebrow="Curriculum"
         title="Courses that turn effort into"
@@ -107,7 +110,7 @@ const Courses = () => {
           className="mt-14 grid gap-6 lg:grid-cols-3"
         >
           {PLANS.map((plan) => (
-            <motion.div key={plan.name} variants={fadeUp}>
+            <motion.div key={plan.name} variants={depthIn}>
               <PricingCard plan={plan} />
             </motion.div>
           ))}

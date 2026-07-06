@@ -7,14 +7,17 @@ import StatCard from "../../components/cards/StatCard.jsx";
 import Icon from "../../components/ui/Icon.jsx";
 import Marquee from "../../components/ui/Marquee.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { COMMUNITY_STATS, COMMUNITY_CHANNELS, PARTNERS } from "../../data/community.js";
 import { accent } from "../../utils/accents.js";
-import { staggerContainer, fadeUp, viewportOnce } from "../../utils/motion.js";
+import { staggerContainer, scaleIn, depthIn, viewportOnce } from "../../utils/motion.js";
 import { cn } from "../../utils/cn.js";
 
 /** Community — the always-on network around the academy. */
 const Community = () => (
   <>
+    {/* Page ambience — the member swarm orbiting as one halo */}
+    <AmbientScene scene="community" />
     <PageHeader
       eyebrow="Community"
       title="You're never building"
@@ -31,7 +34,7 @@ const Community = () => (
         className="grid gap-8 rounded-3xl border border-slate-line surface p-10 sm:grid-cols-2 lg:grid-cols-4"
       >
         {COMMUNITY_STATS.map((s) => (
-          <motion.div key={s.label} variants={fadeUp}>
+          <motion.div key={s.label} variants={scaleIn}>
             <StatCard {...s} className="text-center" />
           </motion.div>
         ))}
@@ -54,8 +57,8 @@ const Community = () => (
         {COMMUNITY_CHANNELS.map((ch) => {
           const a = accent(ch.accent);
           return (
-            <motion.div key={ch.name} variants={fadeUp}>
-              <GlassPanel hover className="group h-full p-7">
+            <motion.div key={ch.name} variants={depthIn}>
+              <GlassPanel hover tilt className="group h-full p-7">
                 <div className={cn("mb-5 grid size-12 place-items-center rounded-xl border", a.border, a.bg, a.text)}>
                   <Icon name={ch.icon} className="size-6" strokeWidth={1.9} />
                 </div>

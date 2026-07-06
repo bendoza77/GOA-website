@@ -61,14 +61,30 @@ const ScrollJourney = () => {
   if (!animationsOn) return null;
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className={cn(
-        "pointer-events-none fixed inset-0 -z-[5] h-full w-full transition-opacity duration-1000",
-        ready ? "opacity-100" : "opacity-0"
-      )}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none fixed inset-0 -z-[5] h-full w-full transition-opacity duration-1000",
+          ready ? "opacity-100" : "opacity-0"
+        )}
+      />
+      {/* Readability veil — quiets the scene behind the centre content
+          column (where the copy lives) while the edges stay vivid. Sits
+          between the canvas (-z-5) and the page content. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none fixed inset-0 -z-[4] transition-opacity duration-1000",
+          ready ? "opacity-100" : "opacity-0"
+        )}
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-void) 45%, transparent) 22%, color-mix(in srgb, var(--color-void) 45%, transparent) 78%, transparent 100%)",
+        }}
+      />
+    </>
   );
 };
 

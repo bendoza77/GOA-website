@@ -29,8 +29,13 @@ Install `playwright-core` in a scratchpad dir, not in the repo.
 
 - **Intro loader**: shows on first visit (text "INITIALISING"), must NOT replay
   on reload in the same session (sessionStorage key `goa-intro-shown`).
-- **Spline deferral**: no `react-spline`/`physics`/`opentype`/`spline.design`
-  requests before scrolling; scroll `#interactive-3d` into view → chunks stream.
+- **Spline staging**: no `react-spline`/`spline.design` requests during the
+  initial load window (first ~4s); an idle warmup (window load + 4.5s + idle)
+  then streams the runtime chunk and `.splinecode` so the near-viewport mount
+  of `#interactive-3d` is cache-hot. Scrolling to the section before warmup
+  fires must still stream + render the scene (path unchanged). Low-end
+  contexts (`saveData` / `deviceMemory <= 2`) must never request Spline and
+  render the FloatingObjects fallback instead.
 - **Route prefetch**: after ~4s idle on Home, all page chunks (`Courses-*`,
   `Blog-*`, …) should already be in the request log; SPA nav must not flash
   the "LOADING" PageLoader.

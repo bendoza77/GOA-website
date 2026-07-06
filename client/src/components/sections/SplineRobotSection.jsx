@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import SplineScene from "../3d/SplineScene.jsx";
+import { warmSplineScene } from "../../utils/splineWarmup.js";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
 import Section from "../layout/Section.jsx";
@@ -18,7 +20,14 @@ import { viewportOnce } from "../../utils/motion.js";
  */
 const ROBOT_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 
-const SplineRobotSection = () => (
+const SplineRobotSection = () => {
+  /* Pay the runtime-parse + scene-download costs during idle time so the
+     robot's first render never janks an active scroll. */
+  useEffect(() => {
+    warmSplineScene(ROBOT_SCENE);
+  }, []);
+
+  return (
   <Section id="interactive-3d">
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -68,6 +77,7 @@ const SplineRobotSection = () => (
       </Card>
     </motion.div>
   </Section>
-);
+  );
+};
 
 export default SplineRobotSection;

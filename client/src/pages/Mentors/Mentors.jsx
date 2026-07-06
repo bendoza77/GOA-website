@@ -3,12 +3,15 @@ import PageHeader from "../../components/sections/PageHeader.jsx";
 import Section from "../../components/layout/Section.jsx";
 import MentorCard from "../../components/cards/MentorCard.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { MENTORS } from "../../data/mentors.js";
-import { staggerContainer, fadeUp } from "../../utils/motion.js";
+import { staggerContainer, tiltIn } from "../../utils/motion.js";
 
 /** Mentors — full roster grid. */
 const Mentors = () => (
   <>
+    {/* Page ambience — the mentor constellation network */}
+    <AmbientScene scene="mentors" />
     <PageHeader
       eyebrow="The people"
       title="Mentors who have"
@@ -24,7 +27,7 @@ const Mentors = () => (
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         {MENTORS.map((m) => (
-          <motion.div key={m.id} variants={fadeUp}>
+          <motion.div key={m.id} variants={tiltIn}>
             <MentorCard mentor={m} />
           </motion.div>
         ))}

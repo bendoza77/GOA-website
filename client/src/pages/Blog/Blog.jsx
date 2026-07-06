@@ -5,8 +5,9 @@ import Section from "../../components/layout/Section.jsx";
 import BlogCard from "../../components/cards/BlogCard.jsx";
 import Newsletter from "../../components/forms/Newsletter.jsx";
 import GlassPanel from "../../components/ui/GlassPanel.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { BLOG_POSTS, BLOG_CATEGORIES } from "../../data/blog.js";
-import { staggerContainer, fadeUp } from "../../utils/motion.js";
+import { staggerContainer, blurIn } from "../../utils/motion.js";
 import { cn } from "../../utils/cn.js";
 
 /** Blog — filterable articles + inline newsletter capture. */
@@ -20,6 +21,8 @@ const Blog = () => {
 
   return (
     <>
+      {/* Page ambience — field notes adrift between the articles */}
+      <AmbientScene scene="blog" />
       <PageHeader
         eyebrow="Field notes"
         title="Ideas, engineering &"
@@ -53,7 +56,7 @@ const Blog = () => {
           className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {filtered.map((post) => (
-            <motion.div key={post.id} variants={fadeUp}>
+            <motion.div key={post.id} variants={blurIn}>
               <BlogCard post={post} />
             </motion.div>
           ))}

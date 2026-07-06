@@ -8,7 +8,7 @@ import { cn } from "../../utils/cn.js";
 const StoryCard = ({ story }) => {
   const a = accent(story.accent);
   return (
-    <GlassPanel hover className="group flex h-full flex-col p-7">
+    <GlassPanel hover tilt className="group flex h-full flex-col p-7">
       <div className="mb-5 flex items-center gap-4">
         <Avatar initials={story.initials} accent={story.accent} size="lg" />
         <div>

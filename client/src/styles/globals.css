@@ -86,11 +86,16 @@
   }
 
   /* Text gradient ------------------------------------------- */
+  /* Gradient-clipped glyphs are transparent, so an inherited text-shadow
+     would show straight through them — cancel it and use a glyph-shaped
+     drop-shadow for the same lift off animated backdrops. */
   .text-gradient {
     background: linear-gradient(120deg, var(--color-snow) 0%, var(--color-lime) 55%, var(--color-neon) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    text-shadow: none;
+    filter: var(--text-halo-drop);
   }
 
   .text-gradient-green {
@@ -98,6 +103,8 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    text-shadow: none;
+    filter: var(--text-halo-drop);
   }
 
   /* Glows --------------------------------------------------- */

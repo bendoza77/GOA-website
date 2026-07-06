@@ -7,14 +7,23 @@ import Reveal from "../../components/ui/Reveal.jsx";
 import Icon from "../../components/ui/Icon.jsx";
 import Timeline from "../../components/ui/Timeline.jsx";
 import FloatingObjects from "../../components/3d/FloatingObjects.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import ImpactStats from "../../components/sections/ImpactStats.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
 import { VALUES, JOURNEY } from "../../data/journey.js";
-import { staggerContainer, fadeUp, viewportOnce } from "../../utils/motion.js";
+import {
+  staggerContainer,
+  depthIn,
+  slideInLeft,
+  slideInRight,
+  viewportOnce,
+} from "../../utils/motion.js";
 
 /** About — mission, values, journey and impact. */
 const About = () => (
   <>
+    {/* Page ambience — holographic globe drifting behind the story */}
+    <AmbientScene scene="about" />
     <PageHeader
       eyebrow="Our story"
       title="We exist to turn ambition into"
@@ -25,7 +34,7 @@ const About = () => (
     {/* Mission split */}
     <Section className="!pt-6">
       <div className="grid items-center gap-12 lg:grid-cols-2">
-        <Reveal>
+        <Reveal variants={slideInLeft}>
           <span className="eyebrow">Mission</span>
           <h2 className="h2 mt-4 text-balance">
             A different kind of academy — obsessed with what you can build
@@ -49,7 +58,7 @@ const About = () => (
           </ul>
         </Reveal>
 
-        <Reveal delay={0.1}>
+        <Reveal delay={0.1} variants={slideInRight}>
           <GlassPanel className="relative h-[380px] overflow-hidden">
             <FloatingObjects />
           </GlassPanel>
@@ -71,8 +80,8 @@ const About = () => (
         className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
       >
         {VALUES.map((v) => (
-          <motion.div key={v.title} variants={fadeUp}>
-            <GlassPanel hover className="h-full p-7">
+          <motion.div key={v.title} variants={depthIn}>
+            <GlassPanel hover tilt className="h-full p-7">
               <div className="mb-5 grid size-12 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
                 <Icon name={v.icon} className="size-6" strokeWidth={1.9} />
               </div>

@@ -3,12 +3,15 @@ import PageHeader from "../../components/sections/PageHeader.jsx";
 import Section from "../../components/layout/Section.jsx";
 import EventCard from "../../components/cards/EventCard.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
+import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { EVENTS } from "../../data/events.js";
-import { staggerContainer, fadeUp } from "../../utils/motion.js";
+import { staggerContainer, slideInLeft, slideInRight } from "../../utils/motion.js";
 
 /** Events — upcoming workshops, talks, hackathons and hiring fairs. */
 const Events = () => (
   <>
+    {/* Page ambience — the time ring with orbiting tickets */}
+    <AmbientScene scene="events" />
     <PageHeader
       eyebrow="What's on"
       title="Live workshops, talks &"
@@ -23,8 +26,8 @@ const Events = () => (
         animate="show"
         className="grid gap-6 lg:grid-cols-2"
       >
-        {EVENTS.map((event) => (
-          <motion.div key={event.id} variants={fadeUp}>
+        {EVENTS.map((event, i) => (
+          <motion.div key={event.id} variants={i % 2 ? slideInRight : slideInLeft}>
             <EventCard event={event} />
           </motion.div>
         ))}
