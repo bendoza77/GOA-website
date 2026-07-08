@@ -4,6 +4,7 @@ import { CursorProvider } from "./context/CursorContext.jsx";
 import { NavigationProvider } from "./context/NavigationContext.jsx";
 import Cursor from "./components/cursor/Cursor.jsx";
 import LoadingScreen from "./components/loaders/LoadingScreen.jsx";
+import SmoothScroll from "./components/scroll/SmoothScroll.jsx";
 import AppRoutes from "./routes/AppRoutes.jsx";
 
 /**
@@ -16,6 +17,7 @@ const App = () => (
     <AnimationProvider>
       <CursorProvider>
         <NavigationProvider>
+          <SmoothScroll />
           <LoadingScreen />
           <Cursor />
           <AppRoutes />

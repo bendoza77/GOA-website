@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { HERO_STATS } from "../../data/stats.js";
 import { staggerContainer, fadeUp } from "../../utils/motion.js";
 import { onIntroDone } from "../../utils/introGate.js";
@@ -42,11 +42,46 @@ const Hero = () => {
   const isStatic = phase === "static";
   const show = phase !== "wait";
 
+  /* Scroll-out parallax — as the user scrolls past the hero, copy and visual
+     drift apart at different depths and dissolve, handing the frame over to
+     the 3D journey (the laptop → portal transformation) behind it. */
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, -110]);
+  const visualY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const visualScale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.65, 1], [1, 0.4, 0]);
+
   return (
-  <section className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16 sm:pt-32">
+  <section
+    ref={sectionRef}
+    className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16 sm:pt-32"
+  >
     {/* Local ambience layered above the global backdrop */}
     <AnimatedGrid perspective className="opacity-70" />
     <ParticleField className="opacity-70" />
+
+    {/* Volumetric light rays — two soft diagonal beams falling through the
+        digital atmosphere. Pure gradients + blur, compositor-only. */}
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        className="absolute -top-1/3 left-[22%] h-[150%] w-36 rotate-[22deg] blur-2xl"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in srgb, var(--color-lime) 14%, transparent), color-mix(in srgb, var(--color-lime) 4%, transparent) 55%, transparent)",
+        }}
+      />
+      <div
+        className="absolute -top-1/3 right-[16%] h-[140%] w-24 -rotate-[16deg] blur-2xl"
+        style={{
+          background:
+            "linear-gradient(to bottom, color-mix(in srgb, var(--color-neon) 11%, transparent), color-mix(in srgb, var(--color-neon) 3%, transparent) 55%, transparent)",
+        }}
+      />
+    </div>
 
     <div className="container-goa relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
       {/* Left — copy */}
@@ -54,6 +89,7 @@ const Hero = () => {
         variants={staggerContainer(0.12)}
         initial={isStatic ? false : "hidden"}
         animate={show ? "show" : "hidden"}
+        style={{ y: copyY, opacity: heroOpacity }}
         className="flex flex-col items-start gap-6"
       >
         <motion.div variants={fadeUp}>
@@ -102,14 +138,20 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Right — 3D focal point */}
+      {/* Right — 3D focal point. Outer wrapper owns the scroll parallax so it
+          never fights the entrance animation's own opacity/scale. */}
       <motion.div
-        initial={isStatic ? false : { opacity: 0, scale: 0.9 }}
-        animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        style={{ y: visualY, scale: visualScale, opacity: heroOpacity }}
         className="relative mx-auto h-[360px] w-full max-w-lg sm:h-[460px] lg:h-[560px]"
       >
-        <HeroRobot />
+        <motion.div
+          initial={isStatic ? false : { opacity: 0, scale: 0.9 }}
+          animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="h-full w-full"
+        >
+          <HeroRobot />
+        </motion.div>
       </motion.div>
     </div>
 

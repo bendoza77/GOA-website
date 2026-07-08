@@ -4,13 +4,17 @@ import {
   BufferGeometry,
   CanvasTexture,
   CatmullRomCurve3,
+  CircleGeometry,
   Color,
   DoubleSide,
+  EdgesGeometry,
   Float32BufferAttribute,
   Fog,
   Group,
   IcosahedronGeometry,
   InstancedMesh,
+  LineBasicMaterial,
+  LineSegments,
   MathUtils,
   Mesh,
   MeshBasicMaterial,
@@ -21,6 +25,7 @@ import {
   PointsMaterial,
   Scene,
   SphereGeometry,
+  TorusGeometry,
   TubeGeometry,
   Vector3,
   WebGLRenderer,
@@ -33,8 +38,14 @@ import {
  * timeline: the camera travels a cinematic path while the story unfolds in
  * overlapping chapters —
  *
- *   1. drift through a particle "code universe" with floating code panels
- *   2. scattered knowledge nodes gather into orbit around a wireframe core
+ *   0. a holographic laptop floats ahead of the camera, screen glowing;
+ *      scrolling spins it, folds it shut and collapses it into a portal ring
+ *   1. the camera flies through the portal as it bursts into particles,
+ *      drifting on through the "code universe" of stars, binary glyph
+ *      streams and floating code panels
+ *   2. scattered knowledge nodes gather into orbit around a wireframe core —
+ *      an AI mind — with neural link lines pulsing between node and core,
+ *      fed by an energy trail flowing back from the portal
  *   3. a glowing learning pathway arcs away from the core
  *   4. pixel cubes assemble into the GOA "G" mark at the end of the path
  *   5. everything disperses as the camera pulls up for a wide finale
@@ -51,6 +62,11 @@ import {
 
 /* Timeline windows (fractions of full Home scroll) for each story beat. */
 const BEATS = {
+  laptopOut: [0.09, 0.17], // laptop folds + collapses into the portal
+  portalIn: [0.06, 0.16], // portal ring grows out of the collapsing laptop
+  portalBurst: [0.2, 0.33], // ...and shatters outward as the camera passes
+  trail: [0.15, 0.27], // energy trail: portal → core
+  trailOut: [0.36, 0.46],
   gather: [0.1, 0.32], // nodes+panels: scatter → orbit the core
   path: [0.3, 0.44], // learning pathway fades in
   pathOut: [0.68, 0.84], // ...and back out
@@ -61,7 +77,7 @@ const BEATS = {
 /* Camera keyframes: [progress, position, lookAt]. Interpolated with
    smoothstep between neighbours, then damped — cinematic by construction. */
 const CAM_KEYS = [
-  [0.0, new Vector3(0, 0.2, 6), new Vector3(0, 0, -8)],
+  [0.0, new Vector3(0, 0.3, 6.4), new Vector3(0.3, 0.45, -4)],
   [0.18, new Vector3(2.3, 0.7, 0.5), new Vector3(0, 0, -14)],
   [0.36, new Vector3(-2.6, 1.1, -7.5), new Vector3(0.5, 0, -15)],
   [0.54, new Vector3(-0.8, 0.5, -16.5), new Vector3(6, -0.6, -28)],
@@ -71,6 +87,11 @@ const CAM_KEYS = [
 ];
 
 const CORE_POS = new Vector3(0, 0, -14);
+/* Laptop + portal share an anchor placed ON the camera path between the
+   0.18 and 0.36 keyframes, so the camera genuinely flies through the ring
+   (~p 0.26) right as it bursts into particles. */
+const LAPTOP_POS = new Vector3(0.3, 0.55, -3.2);
+const PORTAL_POS = new Vector3(0.3, 0.7, -3.0);
 /* off to the right of the camera's finale framing so the assembling mark
    never sits directly behind section copy */
 const G_POS = new Vector3(7.8, -0.5, -31.5);
@@ -94,6 +115,12 @@ const THEMES = {
     panelOpacity: 0.35,
     nodeOpacity: 0.7,
     coreInnerOpacity: 0.28,
+    laptop: "#7dff9e",
+    portal: "#7dff9e",
+    glyph: "#57e08a",
+    link: "#7dff9e",
+    glyphOpacity: 0.42,
+    linkOpacity: 0.3,
     dim: 1, // master multiplier for scroll-driven opacities
   },
   light: {
@@ -108,6 +135,12 @@ const THEMES = {
     panelOpacity: 0.2,
     nodeOpacity: 0.3,
     coreInnerOpacity: 0.1,
+    laptop: "#0d8f3f",
+    portal: "#0d8f3f",
+    glyph: "#16a34a",
+    link: "#0d8f3f",
+    glyphOpacity: 0.2,
+    linkOpacity: 0.16,
     dim: 0.5,
   },
 };
@@ -156,6 +189,21 @@ function makeCodeTexture(isDark) {
     g.fillRect(indent, y, width, 6);
     y += 14;
   }
+  return new CanvasTexture(c);
+}
+
+/** Single character drawn white on transparent — Points sprite for the
+ *  binary streams. Tinted by the material, so one texture serves both themes. */
+function makeGlyphTexture(ch) {
+  const c = document.createElement("canvas");
+  c.width = 64;
+  c.height = 64;
+  const g = c.getContext("2d");
+  g.font = "700 44px 'JetBrains Mono', 'Fira Code', monospace";
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillStyle = "#ffffff";
+  g.fillText(ch, 32, 34);
   return new CanvasTexture(c);
 }
 
@@ -208,8 +256,13 @@ export class JourneyEngine {
 
     this._disposables = [];
     this._buildStars();
+    this._buildGlyphStreams();
+    this._buildLaptop();
+    this._buildPortal();
     this._buildCore();
     this._buildNodes();
+    this._buildLinks();
+    this._buildTrail();
     this._buildPanels();
     this._buildPath();
     this._buildPixelG();
@@ -260,6 +313,244 @@ export class JourneyEngine {
     this.stars = new Points(geo, this.starMat);
     this.scene.add(this.stars);
     this._track(geo, this.starMat);
+  }
+
+  /** Binary streams — "0" and "1" glyph sprites drifting in depth around the
+   *  whole camera path. Two counter-rotating clouds, two draw calls. */
+  _buildGlyphStreams() {
+    const per = this.coarse ? 70 : 140;
+    this.glyphs = [];
+    this.glyphMats = [];
+    ["0", "1"].forEach((ch, gi) => {
+      const rand = mulberry(300 + gi * 77);
+      const pos = new Float32Array(per * 3);
+      for (let i = 0; i < per; i++) {
+        pos[i * 3] = (rand() - 0.5) * 56;
+        pos[i * 3 + 1] = (rand() - 0.5) * 26;
+        pos[i * 3 + 2] = -42 + rand() * 46;
+      }
+      const geo = new BufferGeometry();
+      geo.setAttribute("position", new Float32BufferAttribute(pos, 3));
+      const tex = makeGlyphTexture(ch);
+      const mat = new PointsMaterial({
+        map: tex,
+        size: 0.34,
+        sizeAttenuation: true,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        opacity: 0,
+      });
+      const points = new Points(geo, mat);
+      this.scene.add(points);
+      this.glyphs.push(points);
+      this.glyphMats.push(mat);
+      this._track(geo, mat, tex);
+    });
+  }
+
+  /** Holographic laptop — the hero's focal object. Edge-line hologram with a
+   *  glowing code screen; scrolling folds and collapses it into the portal. */
+  _buildLaptop() {
+    this.laptop = new Group();
+    this.laptop.position.copy(LAPTOP_POS);
+
+    this.lapEdgeMat = new LineBasicMaterial({
+      transparent: true,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    this.lapFillMat = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.07,
+      blending: AdditiveBlending,
+      depthWrite: false,
+      side: DoubleSide,
+    });
+    this.lapGlowMat = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.12,
+      blending: AdditiveBlending,
+      depthWrite: false,
+      side: DoubleSide,
+    });
+
+    /* base slab */
+    const baseGeo = new BoxGeometry(2.3, 0.1, 1.5);
+    const baseEdgeGeo = new EdgesGeometry(baseGeo);
+    const base = new Mesh(baseGeo, this.lapFillMat);
+    const baseEdges = new LineSegments(baseEdgeGeo, this.lapEdgeMat);
+    /* keyboard glow on the deck */
+    const kbGeo = new PlaneGeometry(2.0, 1.2);
+    const kb = new Mesh(kbGeo, this.lapGlowMat);
+    kb.rotation.x = -Math.PI / 2;
+    kb.position.y = 0.06;
+
+    /* lid — hinged at the back edge so it can fold shut on scroll */
+    this.lid = new Group();
+    this.lid.position.z = -0.72;
+    const lidGeo = new BoxGeometry(2.3, 1.5, 0.06);
+    const lidEdgeGeo = new EdgesGeometry(lidGeo);
+    const lidFill = new Mesh(lidGeo, this.lapFillMat);
+    const lidEdges = new LineSegments(lidEdgeGeo, this.lapEdgeMat);
+    lidFill.position.y = 0.75;
+    lidEdges.position.y = 0.75;
+    /* code screen — reuses the shared code-editor texture (set in setTheme) */
+    this.lapScreenMat = new MeshBasicMaterial({
+      transparent: true,
+      depthWrite: false,
+      side: DoubleSide,
+    });
+    const screenGeo = new PlaneGeometry(2.06, 1.28);
+    const screen = new Mesh(screenGeo, this.lapScreenMat);
+    screen.position.set(0, 0.75, 0.05);
+    /* soft halo behind the lid */
+    const haloGeo = new PlaneGeometry(2.9, 2.0);
+    const halo = new Mesh(haloGeo, this.lapGlowMat);
+    halo.position.set(0, 0.78, -0.06);
+    this.lid.add(lidFill, lidEdges, screen, halo);
+
+    /* holographic motes orbiting above the deck */
+    const moteCount = this.coarse ? 36 : 64;
+    const rand = mulberry(808);
+    const motePos = new Float32Array(moteCount * 3);
+    for (let i = 0; i < moteCount; i++) {
+      const a = rand() * Math.PI * 2;
+      const r = 0.7 + rand() * 1.3;
+      motePos[i * 3] = Math.cos(a) * r;
+      motePos[i * 3 + 1] = 0.2 + rand() * 1.5;
+      motePos[i * 3 + 2] = Math.sin(a) * r * 0.7;
+    }
+    const moteGeo = new BufferGeometry();
+    moteGeo.setAttribute("position", new Float32BufferAttribute(motePos, 3));
+    this.moteMat = new PointsMaterial({
+      size: 0.045,
+      sizeAttenuation: true,
+      transparent: true,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    this.motes = new Points(moteGeo, this.moteMat);
+
+    this.laptop.add(base, baseEdges, kb, this.lid, this.motes);
+    this.scene.add(this.laptop);
+    this._track(
+      baseGeo, baseEdgeGeo, kbGeo, lidGeo, lidEdgeGeo, screenGeo, haloGeo,
+      moteGeo, this.lapEdgeMat, this.lapFillMat, this.lapGlowMat,
+      this.lapScreenMat, this.moteMat
+    );
+  }
+
+  /** Portal — twin glowing rings + a faint event-horizon disc + a swirl of
+   *  particles. Grows out of the collapsing laptop, then bursts outward as
+   *  the camera flies through it. */
+  _buildPortal() {
+    this.portal = new Group();
+    this.portal.position.copy(PORTAL_POS);
+    this.portal.visible = false;
+
+    this.portalRingMat = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+      side: DoubleSide,
+    });
+    const ringGeo = new TorusGeometry(1.45, 0.05, 8, 60);
+    this.portalRing = new Mesh(ringGeo, this.portalRingMat);
+    const ring2Geo = new TorusGeometry(1.12, 0.02, 6, 48);
+    this.portalRing2 = new Mesh(ring2Geo, this.portalRingMat);
+
+    this.portalDiscMat = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+      side: DoubleSide,
+    });
+    const discGeo = new CircleGeometry(1.4, 40);
+    const disc = new Mesh(discGeo, this.portalDiscMat);
+
+    const swirlCount = this.coarse ? 50 : 90;
+    const rand = mulberry(909);
+    const swirlPos = new Float32Array(swirlCount * 3);
+    for (let i = 0; i < swirlCount; i++) {
+      const a = rand() * Math.PI * 2;
+      const r = 1.05 + rand() * 0.6;
+      swirlPos[i * 3] = Math.cos(a) * r;
+      swirlPos[i * 3 + 1] = Math.sin(a) * r;
+      swirlPos[i * 3 + 2] = (rand() - 0.5) * 0.3;
+    }
+    const swirlGeo = new BufferGeometry();
+    swirlGeo.setAttribute("position", new Float32BufferAttribute(swirlPos, 3));
+    this.swirlMat = new PointsMaterial({
+      size: 0.05,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    this.swirl = new Points(swirlGeo, this.swirlMat);
+
+    this.portal.add(this.portalRing, this.portalRing2, disc, this.swirl);
+    this.scene.add(this.portal);
+    this._track(
+      ringGeo, ring2Geo, discGeo, swirlGeo,
+      this.portalRingMat, this.portalDiscMat, this.swirlMat
+    );
+  }
+
+  /** Neural links — line segments pulsing between the AI core and its
+   *  orbiting nodes while they're gathered. Endpoints rewritten per frame. */
+  _buildLinks() {
+    this.linkCount = this.coarse ? 12 : 20;
+    this._linkPos = new Float32Array(this.linkCount * 2 * 3);
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new Float32BufferAttribute(this._linkPos, 3));
+    this.linkMat = new LineBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    this.links = new LineSegments(geo, this.linkMat);
+    this.links.visible = false;
+    this.links.frustumCulled = false; // bounds change every frame
+    this.scene.add(this.links);
+    /* jittered attachment points on the core so lines don't converge on one
+       mathematical point */
+    const rand = mulberry(606);
+    this.linkAnchors = Array.from({ length: this.linkCount }, () =>
+      new Vector3(
+        (rand() - 0.5) * 1.6,
+        (rand() - 0.5) * 1.6,
+        (rand() - 0.5) * 1.6
+      ).add(CORE_POS)
+    );
+    this._track(geo, this.linkMat);
+  }
+
+  /** Energy trail — a thin stream of light flowing from the burst portal to
+   *  the AI core, stitching chapter one to chapter two. */
+  _buildTrail() {
+    const curve = new CatmullRomCurve3([
+      PORTAL_POS.clone(),
+      new Vector3(1.7, 0.3, -6.8),
+      new Vector3(-1.0, 0.7, -10.6),
+      CORE_POS.clone(),
+    ]);
+    const geo = new TubeGeometry(curve, 40, 0.028, 6, false);
+    this.trailMat = new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      blending: AdditiveBlending,
+      depthWrite: false,
+    });
+    this.trail = new Mesh(geo, this.trailMat);
+    this.trail.visible = false;
+    this.scene.add(this.trail);
+    this._track(geo, this.trailMat);
   }
 
   _buildCore() {
@@ -420,6 +711,24 @@ export class JourneyEngine {
     this.pathMat.color = new Color(t.path);
     this.beadMat.color = new Color(t.path);
     this.cubeMat.color = new Color(t.cube);
+    /* chapter-zero cast */
+    const laptop = new Color(t.laptop);
+    this.lapEdgeMat.color = laptop;
+    this.lapFillMat.color = laptop;
+    this.lapGlowMat.color = laptop;
+    this.moteMat.color = laptop;
+    this.lapScreenMat.color = new Color(t.panel);
+    this.lapScreenMat.map = isDark ? this.panelTex.dark : this.panelTex.light;
+    const portal = new Color(t.portal);
+    this.portalRingMat.color = portal;
+    this.portalDiscMat.color = portal;
+    this.swirlMat.color = portal;
+    this.trailMat.color = portal;
+    this.linkMat.color = new Color(t.link);
+    this.linkBaseOpacity = t.linkOpacity;
+    const glyph = new Color(t.glyph);
+    for (const mat of this.glyphMats) mat.color = glyph;
+    this.glyphBaseOpacity = t.glyphOpacity;
     /* fog fades far objects toward the page background colour */
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--color-void").trim();
     if (bg) this.scene.fog.color.set(bg);
@@ -496,6 +805,60 @@ export class JourneyEngine {
     this.stars.rotation.z = time * 0.004;
     this.starMat.size = 0.07 + win(p, 0.8, 1) * 0.03;
 
+    /* ------ binary streams: counter-drifting glyph clouds ------ */
+    this.glyphs[0].rotation.y = time * 0.012;
+    this.glyphs[1].rotation.y = -time * 0.009;
+    const glyphGlow =
+      this.glyphBaseOpacity * this.dim * (0.8 + 0.2 * Math.sin(time * 0.6));
+    this.glyphMats[0].opacity = glyphGlow;
+    this.glyphMats[1].opacity = glyphGlow * 0.85;
+
+    /* ------ hero laptop: float → spin → fold → collapse into portal ------ */
+    const lapOut = win(p, ...BEATS.laptopOut);
+    if (lapOut < 0.999) {
+      this.laptop.visible = true;
+      const lo = (1 - lapOut) * this.dim;
+      this.laptop.position.y = LAPTOP_POS.y + Math.sin(time * 0.7) * 0.09;
+      this.laptop.rotation.y =
+        -0.35 + Math.sin(time * 0.4) * 0.07 + win(p, 0.02, 0.17) * 2.8;
+      this.laptop.rotation.z = Math.sin(time * 0.32) * 0.03 + lapOut * 0.35;
+      this.laptop.scale.setScalar(1 - lapOut * 0.94);
+      /* lid: open + tilted back at rest, folds shut as it transforms */
+      this.lid.rotation.x = -0.32 + win(p, 0.05, 0.15) * 1.55;
+      this.motes.rotation.y = time * 0.4;
+      this.lapEdgeMat.opacity = 0.8 * lo;
+      this.lapFillMat.opacity = 0.07 * lo;
+      this.lapGlowMat.opacity = 0.12 * lo * (0.85 + 0.15 * Math.sin(time * 1.7));
+      this.lapScreenMat.opacity = 0.75 * lo;
+      this.moteMat.opacity = 0.8 * lo;
+    } else this.laptop.visible = false;
+
+    /* ------ portal: grows from the laptop → bursts as the camera passes ------ */
+    const pin = win(p, ...BEATS.portalIn);
+    const burst = win(p, ...BEATS.portalBurst);
+    const solid = 1 - burst; // ring/disc dissolve as the swirl takes over
+    const pfade = 1 - win(p, 0.3, 0.4);
+    if (pin > 0.002 && pfade > 0.002) {
+      this.portal.visible = true;
+      this.portal.scale.setScalar(0.15 + pin * 0.85 + burst * 2.2);
+      this.portalRing.rotation.z = time * 0.3;
+      this.portalRing2.rotation.z = -time * 0.45;
+      this.swirl.rotation.z = -time * 0.55;
+      this.portalRingMat.opacity = pin * solid * pfade * 0.9 * this.dim;
+      this.portalDiscMat.opacity =
+        pin * solid * solid * pfade * 0.14 * this.dim;
+      this.swirlMat.opacity = pin * pfade * 0.75 * this.dim;
+      this.swirlMat.size = 0.05 + burst * 0.07; // shards spread as it shatters
+    } else this.portal.visible = false;
+
+    /* ------ energy trail: burst portal → AI core ------ */
+    const trailIn = win(p, ...BEATS.trail) * (1 - win(p, ...BEATS.trailOut));
+    if (trailIn > 0.002) {
+      this.trail.visible = true;
+      this.trailMat.opacity =
+        trailIn * 0.5 * this.dim * (0.8 + 0.2 * Math.sin(time * 3.1));
+    } else this.trail.visible = false;
+
     /* ------ knowledge core ------ */
     const coreGrow = 0.55 + win(p, ...BEATS.gather) * 0.85 - win(p, 0.4, 0.58) * 0.5;
     this.core.scale.setScalar(coreGrow + Math.sin(time * 0.9) * 0.02);
@@ -516,6 +879,17 @@ export class JourneyEngine {
       d.position.lerpVectors(n.scatter, this._v3, gather);
       /* ambient drift while scattered */
       d.position.y += Math.sin(time * 0.4 + n.phase) * 0.25 * (1 - gather);
+      /* first N nodes feed the neural-link line endpoints */
+      if (i < this.linkCount) {
+        const j = i * 6;
+        const anchor = this.linkAnchors[i];
+        this._linkPos[j] = anchor.x;
+        this._linkPos[j + 1] = anchor.y;
+        this._linkPos[j + 2] = anchor.z;
+        this._linkPos[j + 3] = d.position.x;
+        this._linkPos[j + 4] = d.position.y;
+        this._linkPos[j + 5] = d.position.z;
+      }
       const s = 0.7 + gather * 0.6 + Math.sin(time * 1.3 + n.phase) * 0.15;
       d.scale.setScalar(s);
       d.rotation.set(0, a, 0);
@@ -523,6 +897,17 @@ export class JourneyEngine {
       this.nodes.setMatrixAt(i, d.matrix);
     }
     this.nodes.instanceMatrix.needsUpdate = true;
+
+    /* ------ neural links: pulse between core and gathered nodes ------ */
+    if (gather > 0.02) {
+      this.links.visible = true;
+      this.links.geometry.attributes.position.needsUpdate = true;
+      this.linkMat.opacity =
+        gather *
+        this.linkBaseOpacity *
+        this.dim *
+        (0.75 + 0.25 * Math.sin(time * 2.4));
+    } else this.links.visible = false;
 
     /* ------ code panels: drift → orbit the core ------ */
     const orbit = win(p, ...BEATS.gather) * (1 - win(p, 0.66, 0.82));
