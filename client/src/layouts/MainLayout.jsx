@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAnimationContext } from "../context/AnimationContext.jsx";
+import { useRideComplete } from "../hooks/useRideComplete.js";
 import PageLoader from "../components/loaders/PageLoader.jsx";
 import Navbar from "../components/navigation/Navbar.jsx";
 import Footer from "../components/layout/Footer.jsx";
@@ -13,16 +15,27 @@ import { pageTransition } from "../utils/motion.js";
 /**
  * MainLayout — the persistent app shell: fixed brand backdrop, scroll bar,
  * glass navbar and footer wrap an animated <Outlet> so routes cross-fade.
+ * Home opens as a chrome-free pure-3D ride: scroll bar and footer stay out
+ * of the frame until the ride completes, then join the step-by-step content
+ * entrance (the navbar handles itself the same way).
  */
 const MainLayout = () => {
   const location = useLocation();
   const outlet = useOutlet();
+  const { animationsOn } = useAnimationContext();
+  const rideDone = useRideComplete();
   useDocumentMeta();
+
+  /* During Home's 3D ride: no chrome. Full chrome returns once the ride is
+     over — and is always there when animations are off, because Home then
+     renders its classic content page. */
+  const cinematicHome =
+    animationsOn && location.pathname === "/" && !rideDone;
 
   return (
     <div className="relative flex min-h-screen flex-col">
       <PageBackground />
-      <ScrollProgress />
+      {!cinematicHome && <ScrollProgress />}
       <ScrollToTop />
       <Navbar />
 
@@ -40,7 +53,7 @@ const MainLayout = () => {
         </motion.main>
       </AnimatePresence>
 
-      <Footer />
+      {!cinematicHome && <Footer />}
     </div>
   );
 };

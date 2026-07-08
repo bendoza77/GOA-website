@@ -63,16 +63,15 @@ export const PAGE_META = {
   },
 };
 
-/** Primary navigation — routes live in /routes/AppRoutes.jsx */
+/** Primary navigation — routes live in /routes/AppRoutes.jsx.
+ *  Header keeps only the four primary destinations; the deeper pages
+ *  (Community, Events, Stories, Blog) stay routed and reachable via
+ *  FOOTER_LINKS. */
 export const NAV_LINKS = [
   { label: "Home", path: "/" },
   { label: "Courses", path: "/courses" },
   { label: "Mentors", path: "/mentors" },
   { label: "About", path: "/about" },
-  { label: "Community", path: "/community" },
-  { label: "Events", path: "/events" },
-  { label: "Stories", path: "/success-stories" },
-  { label: "Blog", path: "/blog" },
 ];
 
 export const FOOTER_LINKS = [

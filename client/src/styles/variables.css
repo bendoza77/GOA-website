@@ -38,8 +38,11 @@
   --glass-bg: rgba(12, 20, 14, 0.55);
   --glass-border: rgba(125, 255, 158, 0.12);
   --glass-blur: 18px;
-  --glass-panel-grad: linear-gradient(160deg, rgba(18, 26, 20, 0.72), rgba(8, 13, 10, 0.55));
-  --glass-panel-border: rgba(125, 255, 158, 0.1);
+  /* Alphas kept low on purpose: the 3D journey scene must glow through every
+     panel so UI reads as embedded in the world, not layered over it — the
+     backdrop blur carries legibility instead of opacity. */
+  --glass-panel-grad: linear-gradient(160deg, rgba(18, 26, 20, 0.5), rgba(8, 13, 10, 0.32));
+  --glass-panel-border: rgba(125, 255, 158, 0.12);
   --glass-panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 60px -30px rgba(0, 0, 0, 0.9);
 
   /* Neutral translucent surfaces + hairlines */
@@ -78,7 +81,7 @@
 
   --glass-bg: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(16, 74, 42, 0.12);
-  --glass-panel-grad: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(240, 246, 241, 0.72));
+  --glass-panel-grad: linear-gradient(160deg, rgba(255, 255, 255, 0.86), rgba(240, 246, 241, 0.6));
   --glass-panel-border: rgba(16, 74, 42, 0.12);
   --glass-panel-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 24px 50px -30px rgba(18, 60, 34, 0.28);
 

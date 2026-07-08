@@ -62,10 +62,10 @@ import {
 
 /* Timeline windows (fractions of full Home scroll) for each story beat. */
 const BEATS = {
-  laptopOut: [0.09, 0.17], // laptop folds + collapses into the portal
-  portalIn: [0.06, 0.16], // portal ring grows out of the collapsing laptop
-  portalBurst: [0.2, 0.33], // ...and shatters outward as the camera passes
-  trail: [0.15, 0.27], // energy trail: portal → core
+  laptopOut: [0.08, 0.16], // laptop folds + collapses into the portal
+  portalIn: [0.06, 0.14], // portal ring grows out of the collapsing laptop
+  portalBurst: [0.16, 0.28], // ...and shatters outward as the camera passes
+  trail: [0.14, 0.26], // energy trail: portal → core
   trailOut: [0.36, 0.46],
   gather: [0.1, 0.32], // nodes+panels: scatter → orbit the core
   path: [0.3, 0.44], // learning pathway fades in
@@ -77,7 +77,7 @@ const BEATS = {
 /* Camera keyframes: [progress, position, lookAt]. Interpolated with
    smoothstep between neighbours, then damped — cinematic by construction. */
 const CAM_KEYS = [
-  [0.0, new Vector3(0, 0.3, 6.4), new Vector3(0.3, 0.45, -4)],
+  [0.0, new Vector3(0, 0.3, 6.4), new Vector3(0.05, 0.45, -4)],
   [0.18, new Vector3(2.3, 0.7, 0.5), new Vector3(0, 0, -14)],
   [0.36, new Vector3(-2.6, 1.1, -7.5), new Vector3(0.5, 0, -15)],
   [0.54, new Vector3(-0.8, 0.5, -16.5), new Vector3(6, -0.6, -28)],
@@ -87,11 +87,12 @@ const CAM_KEYS = [
 ];
 
 const CORE_POS = new Vector3(0, 0, -14);
-/* Laptop + portal share an anchor placed ON the camera path between the
-   0.18 and 0.36 keyframes, so the camera genuinely flies through the ring
-   (~p 0.26) right as it bursts into particles. */
-const LAPTOP_POS = new Vector3(0.3, 0.55, -3.2);
-const PORTAL_POS = new Vector3(0.3, 0.7, -3.0);
+/* The portal hangs right-of-centre, clear of the hero copy that rises on
+   the left as the intro act ends: the camera sweeps close past it (a
+   fly-past) while it bursts, and the shards wash across the frame without
+   parking a giant ring over the headline. The centre-stage laptop drifts
+   into this anchor while it folds. */
+const PORTAL_POS = new Vector3(1.7, 0.55, -3.4);
 /* off to the right of the camera's finale framing so the assembling mark
    never sits directly behind section copy */
 const G_POS = new Vector3(7.8, -0.5, -31.5);
@@ -192,6 +193,22 @@ function makeCodeTexture(isDark) {
   return new CanvasTexture(c);
 }
 
+/** Soft radial white blob — glow planes fade to nothing at their edges
+ *  instead of reading as hard-edged rectangles. Tinted by the material. */
+function makeGlowTexture() {
+  const c = document.createElement("canvas");
+  c.width = 128;
+  c.height = 128;
+  const g = c.getContext("2d");
+  const grad = g.createRadialGradient(64, 64, 6, 64, 64, 64);
+  grad.addColorStop(0, "rgba(255,255,255,1)");
+  grad.addColorStop(0.5, "rgba(255,255,255,0.35)");
+  grad.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  return new CanvasTexture(c);
+}
+
 /** Single character drawn white on transparent — Points sprite for the
  *  binary streams. Tinted by the material, so one texture serves both themes. */
 function makeGlyphTexture(ch) {
@@ -208,9 +225,14 @@ function makeGlyphTexture(ch) {
 }
 
 export class JourneyEngine {
-  constructor(canvas, { isDark = true, coarse = false } = {}) {
+  constructor(canvas, { isDark = true, coarse = false, storyVh = null } = {}) {
     this.canvas = canvas;
     this.disposed = false;
+    /* When set, the story timeline spans storyVh viewport-heights of scroll
+       instead of the whole document — the ride COMPLETES at the end of the
+       Home runway, then holds its finale while the content sections that
+       follow scroll past. */
+    this._storyVh = storyVh;
     this.progress = 0;
     this.time = 0;
     this.lastT = 0;
@@ -225,6 +247,16 @@ export class JourneyEngine {
     this._v3 = new Vector3();
     this._look = new Vector3(0, 0, -8);
     this._dummy = new Object3D();
+
+    /* damped pointer parallax — the camera and laptop lean toward the mouse */
+    this.px = 0;
+    this.py = 0;
+    this._tpx = 0;
+    this._tpy = 0;
+
+    /* centre-stage rest anchor for the intro laptop — kept current by
+       _layout() on init + resize */
+    this._lapBase = new Vector3(0, 0.5, -3.3);
 
     this.renderer = new WebGLRenderer({
       canvas,
@@ -268,16 +300,28 @@ export class JourneyEngine {
     this._buildPixelG();
 
     this.setTheme(isDark);
+    this._layout();
 
     this._onResize = this._handleResize.bind(this);
     window.addEventListener("resize", this._onResize, { passive: true });
 
+    /* pointer parallax — fine pointers only, damped in the loop */
+    this._onPointer = (e) => {
+      this._tpx = (e.clientX / window.innerWidth) * 2 - 1;
+      this._tpy = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    if (!this.coarse) {
+      window.addEventListener("pointermove", this._onPointer, { passive: true });
+    }
+
     /* Track document height without per-frame layout reads. */
     this._measure = () => {
-      this.maxScroll = Math.max(
-        document.documentElement.scrollHeight - window.innerHeight,
-        1
-      );
+      this.maxScroll = this._storyVh
+        ? this._storyVh * window.innerHeight
+        : Math.max(
+            document.documentElement.scrollHeight - window.innerHeight,
+            1
+          );
     };
     this._measure();
     this._ro = new ResizeObserver(this._measure);
@@ -353,7 +397,7 @@ export class JourneyEngine {
    *  glowing code screen; scrolling folds and collapses it into the portal. */
   _buildLaptop() {
     this.laptop = new Group();
-    this.laptop.position.copy(LAPTOP_POS);
+    this.laptop.position.copy(this._lapBase); // repositioned per-frame in _tick
 
     this.lapEdgeMat = new LineBasicMaterial({
       transparent: true,
@@ -367,13 +411,16 @@ export class JourneyEngine {
       depthWrite: false,
       side: DoubleSide,
     });
+    const glowTex = makeGlowTexture();
     this.lapGlowMat = new MeshBasicMaterial({
+      map: glowTex,
       transparent: true,
       opacity: 0.12,
       blending: AdditiveBlending,
       depthWrite: false,
       side: DoubleSide,
     });
+    this._track(glowTex);
 
     /* base slab */
     const baseGeo = new BoxGeometry(2.3, 0.1, 1.5);
@@ -456,7 +503,7 @@ export class JourneyEngine {
       depthWrite: false,
       side: DoubleSide,
     });
-    const ringGeo = new TorusGeometry(1.45, 0.05, 8, 60);
+    const ringGeo = new TorusGeometry(1.45, 0.032, 8, 60);
     this.portalRing = new Mesh(ringGeo, this.portalRingMat);
     const ring2Geo = new TorusGeometry(1.12, 0.02, 6, 48);
     this.portalRing2 = new Mesh(ring2Geo, this.portalRingMat);
@@ -757,12 +804,24 @@ export class JourneyEngine {
     }
   }
 
+  /** The laptop is centre stage: the CinematicIntro gives it the whole frame
+   *  (no copy shares the viewport), so it holds the middle at full brightness
+   *  everywhere — portrait screens just get a slightly smaller hologram so
+   *  the edges never crop. */
+  _layout() {
+    const portrait = this.camera.aspect < 1;
+    this._lapBase.set(0, 0.5, -3.3);
+    this._lapDim = 1;
+    this._lapScale = portrait ? 1.1 : 1.5;
+  }
+
   _handleResize() {
     const w = window.innerWidth;
     const h = window.innerHeight;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    this._layout();
     this._measure();
   }
 
@@ -790,12 +849,14 @@ export class JourneyEngine {
     const target = MathUtils.clamp(window.scrollY / this.maxScroll, 0, 1);
     this.progress = MathUtils.damp(this.progress, target, 4.2, dt);
     const p = this.progress;
+    this.px = MathUtils.damp(this.px, this._tpx, 3.5, dt);
+    this.py = MathUtils.damp(this.py, this._tpy, 3.5, dt);
 
     /* ------ camera ------ */
     this._cameraAt(p, this._v1, this._v2);
-    /* gentle handheld sway keeps the frame alive even when idle */
-    this._v1.x += Math.sin(time * 0.23) * 0.18;
-    this._v1.y += Math.cos(time * 0.31) * 0.12;
+    /* gentle handheld sway + pointer lean keep the frame alive */
+    this._v1.x += Math.sin(time * 0.23) * 0.18 + this.px * 0.35;
+    this._v1.y += Math.cos(time * 0.31) * 0.12 - this.py * 0.25;
     this.camera.position.copy(this._v1);
     this._look.lerp(this._v2, 1 - Math.exp(-4 * dt));
     this.camera.lookAt(this._look);
@@ -803,7 +864,7 @@ export class JourneyEngine {
     /* ------ stars: slow drift ------ */
     this.stars.rotation.y = time * 0.008;
     this.stars.rotation.z = time * 0.004;
-    this.starMat.size = 0.07 + win(p, 0.8, 1) * 0.03;
+    this.starMat.size = 0.07 + win(p, 0.8, 1) * 0.07; // finale star-warp
 
     /* ------ binary streams: counter-drifting glyph clouds ------ */
     this.glyphs[0].rotation.y = time * 0.012;
@@ -817,36 +878,57 @@ export class JourneyEngine {
     const lapOut = win(p, ...BEATS.laptopOut);
     if (lapOut < 0.999) {
       this.laptop.visible = true;
-      const lo = (1 - lapOut) * this.dim;
-      this.laptop.position.y = LAPTOP_POS.y + Math.sin(time * 0.7) * 0.09;
+      const lo = (1 - lapOut) * this.dim * this._lapDim;
+      /* rest beside the hero copy, drift into the portal anchor as it folds */
+      this._v3.copy(this._lapBase);
+      this._v3.y += Math.sin(time * 0.7) * 0.09;
+      this.laptop.position.lerpVectors(this._v3, PORTAL_POS, win(p, 0.04, 0.15));
       this.laptop.rotation.y =
-        -0.35 + Math.sin(time * 0.4) * 0.07 + win(p, 0.02, 0.17) * 2.8;
+        -0.42 +
+        Math.sin(time * 0.4) * 0.07 +
+        this.px * 0.24 +
+        win(p, 0.02, 0.17) * 2.8;
+      this.laptop.rotation.x = this.py * 0.12;
       this.laptop.rotation.z = Math.sin(time * 0.32) * 0.03 + lapOut * 0.35;
-      this.laptop.scale.setScalar(1 - lapOut * 0.94);
+      this.laptop.scale.setScalar(this._lapScale * (1 - lapOut * 0.95));
       /* lid: open + tilted back at rest, folds shut as it transforms */
       this.lid.rotation.x = -0.32 + win(p, 0.05, 0.15) * 1.55;
       this.motes.rotation.y = time * 0.4;
-      this.lapEdgeMat.opacity = 0.8 * lo;
-      this.lapFillMat.opacity = 0.07 * lo;
-      this.lapGlowMat.opacity = 0.12 * lo * (0.85 + 0.15 * Math.sin(time * 1.7));
-      this.lapScreenMat.opacity = 0.75 * lo;
-      this.moteMat.opacity = 0.8 * lo;
+      this.lapEdgeMat.opacity = 0.92 * lo;
+      this.lapFillMat.opacity = 0.08 * lo;
+      this.lapGlowMat.opacity = 0.16 * lo * (0.85 + 0.15 * Math.sin(time * 1.7));
+      this.lapScreenMat.opacity = 0.9 * lo;
+      this.moteMat.opacity = 0.85 * lo;
     } else this.laptop.visible = false;
 
     /* ------ portal: grows from the laptop → bursts as the camera passes ------ */
     const pin = win(p, ...BEATS.portalIn);
     const burst = win(p, ...BEATS.portalBurst);
     const solid = 1 - burst; // ring/disc dissolve as the swirl takes over
-    const pfade = 1 - win(p, 0.3, 0.4);
-    if (pin > 0.002 && pfade > 0.002) {
+    const pfade = 1 - win(p, 0.24, 0.34);
+    /* finale reprise: the ring returns far ahead as an exit gate, dead
+       centre in the last camera keyframe's line of sight */
+    const gate = win(p, 0.86, 0.97);
+    if (gate > 0.002) {
       this.portal.visible = true;
-      this.portal.scale.setScalar(0.15 + pin * 0.85 + burst * 2.2);
+      this.portal.position.set(0, 0.5, -34);
+      this.portal.scale.setScalar(1.6 + gate * 1.6 + Math.sin(time * 0.8) * 0.06);
+      this.portalRing.rotation.z = time * 0.3;
+      this.portalRing2.rotation.z = -time * 0.45;
+      this.swirl.rotation.z = -time * 0.35;
+      this.portalRingMat.opacity = gate * 0.8 * this.dim;
+      this.portalDiscMat.opacity = gate * 0.12 * this.dim;
+      this.swirlMat.opacity = gate * 0.7 * this.dim;
+      this.swirlMat.size = 0.09;
+    } else if (pin > 0.002 && pfade > 0.002) {
+      this.portal.visible = true;
+      this.portal.position.copy(PORTAL_POS);
+      this.portal.scale.setScalar(0.15 + pin * 0.85 + burst * 1.9);
       this.portalRing.rotation.z = time * 0.3;
       this.portalRing2.rotation.z = -time * 0.45;
       this.swirl.rotation.z = -time * 0.55;
-      this.portalRingMat.opacity = pin * solid * pfade * 0.9 * this.dim;
-      this.portalDiscMat.opacity =
-        pin * solid * solid * pfade * 0.14 * this.dim;
+      this.portalRingMat.opacity = pin * solid * pfade * 0.6 * this.dim;
+      this.portalDiscMat.opacity = pin * solid * solid * pfade * 0.1 * this.dim;
       this.swirlMat.opacity = pin * pfade * 0.75 * this.dim;
       this.swirlMat.size = 0.05 + burst * 0.07; // shards spread as it shatters
     } else this.portal.visible = false;
@@ -976,6 +1058,7 @@ export class JourneyEngine {
     this.disposed = true;
     cancelAnimationFrame(this._raf);
     window.removeEventListener("resize", this._onResize);
+    window.removeEventListener("pointermove", this._onPointer);
     this._ro.disconnect();
     for (const item of this._disposables) item.dispose?.();
     this.renderer.dispose();

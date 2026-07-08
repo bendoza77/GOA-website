@@ -4,6 +4,8 @@ import { NAV_LINKS } from "../../constants/site.js";
 import { useScrolled } from "../../hooks/useScroll.js";
 import { prefetchRoute } from "../../routes/AppRoutes.jsx";
 import { useNavigationContext } from "../../context/NavigationContext.jsx";
+import { useAnimationContext } from "../../context/AnimationContext.jsx";
+import { useRideComplete } from "../../hooks/useRideComplete.js";
 import { cn } from "../../utils/cn.js";
 import Logo from "../ui/Logo.jsx";
 import Button from "../ui/Button.jsx";
@@ -14,18 +16,30 @@ import MobileMenu from "./MobileMenu.jsx";
 /**
  * Navbar — floating glass header. Transparent at the top of the page, then
  * fades into a blurred bar on scroll. Active route gets a shared-layout pill.
+ * Home opens with a pure-3D ride and zero chrome: the bar stays out of the
+ * frame until the ride completes, then slides in as the first step of the
+ * content entrance. (Always present on other routes, and on Home when
+ * animations are off and the classic content page renders instead.)
  */
 const Navbar = () => {
   const scrolled = useScrolled(20);
   const { isMenuOpen, toggleMenu } = useNavigationContext();
+  const { animationsOn } = useAnimationContext();
   const { pathname } = useLocation();
+  const rideDone = useRideComplete();
+
+  const curtain =
+    animationsOn && pathname === "/" && !rideDone && !isMenuOpen;
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[65] flex justify-center px-4 pt-3 sm:pt-4">
+      <header
+        inert={curtain || undefined}
+        className="fixed inset-x-0 top-0 z-[65] flex justify-center px-4 pt-3 sm:pt-4"
+      >
         <motion.nav
           initial={{ y: -24, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          animate={curtain ? { y: -90, opacity: 0 } : { y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
             "flex w-full max-w-6xl items-center justify-between gap-4 rounded-full px-4 py-2.5 transition-all duration-500 sm:px-5",
