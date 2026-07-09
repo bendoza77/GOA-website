@@ -113,7 +113,7 @@ const CubeStage = ({ dockId = "hero-cube-slot" }) => {
       <p
         ref={captionRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-[13%] z-[36] mx-auto max-w-3xl px-6 text-center font-display text-2xl font-bold leading-tight text-snow opacity-0 sm:text-4xl md:text-5xl"
+        className="pointer-events-none fixed inset-x-0 top-[8%] z-[36] mx-auto max-w-3xl px-6 text-center font-display text-xl font-bold leading-tight text-snow opacity-0 sm:text-3xl md:text-4xl"
         style={{ textShadow: "var(--text-halo)", willChange: "opacity, transform" }}
       >
         A place where everyone is{" "}

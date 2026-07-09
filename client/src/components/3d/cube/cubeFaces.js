@@ -61,18 +61,12 @@ function drawPhoto(g, S, img, pal) {
   else h = S / ar;
   g.drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
 
-  // depth vignette — darken the edges, lift the centre
-  const vig = g.createRadialGradient(S * 0.5, S * 0.44, S * 0.2, S * 0.5, S * 0.5, S * 0.72);
+  // gentle depth vignette — a soft edge falloff for framing, kept light so the
+  // photo reads flat and true (no glare / bright streak on the image)
+  const vig = g.createRadialGradient(S * 0.5, S * 0.5, S * 0.3, S * 0.5, S * 0.5, S * 0.75);
   vig.addColorStop(0, "rgba(0,0,0,0)");
-  vig.addColorStop(1, "rgba(0,0,0,0.5)");
+  vig.addColorStop(1, "rgba(0,0,0,0.28)");
   g.fillStyle = vig;
-  g.fillRect(0, 0, S, S);
-
-  // subtle top sheen for a glassy read
-  const sheen = g.createLinearGradient(0, 0, 0, S);
-  sheen.addColorStop(0, "rgba(255,255,255,0.08)");
-  sheen.addColorStop(0.25, "rgba(255,255,255,0)");
-  g.fillStyle = sheen;
   g.fillRect(0, 0, S, S);
   g.restore();
 

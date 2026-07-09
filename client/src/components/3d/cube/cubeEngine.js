@@ -1,11 +1,9 @@
 import {
   ACESFilmicToneMapping,
   AdditiveBlending,
-  AmbientLight,
   BoxGeometry,
   CanvasTexture,
   Color,
-  DirectionalLight,
   EdgesGeometry,
   Group,
   LineBasicMaterial,
@@ -13,18 +11,14 @@ import {
   MathUtils,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
   PerspectiveCamera,
   PlaneGeometry,
-  PMREMGenerator,
-  PointLight,
   Quaternion,
   Scene,
   SRGBColorSpace,
   Vector3,
   WebGLRenderer,
 } from "three";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { makeCubeFaces } from "./cubeFaces.js";
 
 /**
@@ -151,8 +145,6 @@ export class CubeEngine {
     this.camera.position.set(0, 0, CAM_DIST);
 
     this._disposables = [];
-    this._buildLights();
-    this._buildEnvironment();
     this._buildCube(isDark);
     this._buildShadow();
 
@@ -177,32 +169,6 @@ export class CubeEngine {
       (2 * CAM_DIST * Math.tan(MathUtils.degToRad(FOV) / 2)) / window.innerHeight;
   }
 
-  _buildLights() {
-    this.scene.add(new AmbientLight(0xffffff, 0.85));
-    const key = new DirectionalLight(0xffffff, 2.1);
-    key.position.set(4, 6, 6);
-    this.scene.add(key);
-    const fill = new DirectionalLight(0x7dff9e, 0.7);
-    fill.position.set(-6, -1, 3);
-    this.scene.add(fill);
-    this.rim = new PointLight(0x57e08a, 22, 30);
-    this.rim.position.set(-3, 2, -4);
-    this.scene.add(this.rim);
-  }
-
-  /* Studio reflections via a PMREM'd RoomEnvironment — one-time cost, gives
-     the standard material believable specular highlights. Skipped on low-end
-     GPUs where the extra shader work isn't worth it. */
-  _buildEnvironment() {
-    if (this._lowEnd) return;
-    const pmrem = new PMREMGenerator(this.renderer);
-    const envScene = new RoomEnvironment();
-    this._envRT = pmrem.fromScene(envScene, 0.04);
-    this.scene.environment = this._envRT.texture;
-    envScene.dispose?.();
-    pmrem.dispose();
-  }
-
   _buildCube(isDark) {
     this.cubeGroup = new Group();
 
@@ -212,18 +178,15 @@ export class CubeEngine {
     // BoxGeometry exposes 6 material groups in order +x,-x,+y,-y,+z,-z, which
     // matches FACE_ORDER, so each side gets its own photo.
     const geo = new BoxGeometry(1, 1, 1, 2, 2, 2);
-    // Photo faces: a touch of emissive keeps them clear on shadowed sides
-    // without washing them out; higher roughness avoids a plasticky sheen.
+    // Photo faces are UNLIT (MeshBasicMaterial): no scene lights, reflections
+    // or specular sheen sweep across them, so every side shows the photo flat
+    // and true at full brightness regardless of how the cube is turned.
+    // toneMapped:false keeps the image colours exactly as authored.
     this.cubeMats = this._faces.textures.map(
       (tex) =>
-        new MeshStandardMaterial({
+        new MeshBasicMaterial({
           map: tex,
-          emissive: new Color(0xffffff),
-          emissiveMap: tex,
-          emissiveIntensity: 0.14,
-          metalness: 0.12,
-          roughness: 0.62,
-          envMapIntensity: 0.8,
+          toneMapped: false,
         })
     );
     const cube = new Mesh(geo, this.cubeMats);
@@ -340,20 +303,24 @@ export class CubeEngine {
   /* Live hero-slot world target during travel/dock (pixel-mapped), returns the
      world size the cube should shrink to so it fits the slot. */
   _dockTarget(out) {
-    if (!this.dockEl) {
-      // no reserved slot (e.g. mobile, where the hero has no right column):
-      // rest small in the upper-right and fade with the hero
+    const d = this.dockEl?.getBoundingClientRect();
+    // No reserved slot, OR the slot is hidden below the lg breakpoint (where
+    // it is `display:none`, so its rect collapses to all-zeros): rest small in
+    // the upper-RIGHT and fade with the hero. Guarding on the zero rect keeps
+    // the cube on the right instead of snapping to the top-left corner.
+    if (!d || (d.width === 0 && d.height === 0)) {
       this._screenToWorld(window.innerWidth * 0.72, window.innerHeight * 0.4, out);
       return this._centreScale() * 0.42;
     }
-    const d = this.dockEl.getBoundingClientRect();
     this._screenToWorld(d.left + d.width / 2, d.top + d.height / 2, out);
     // fit ~62% of the slot width
     return Math.max(d.width * 0.62 * this._wpp, 0.4);
   }
 
   _centreScale() {
-    // ~42% of viewport height
+    // ~42% of viewport height. The hero title above it is kept clear by its
+    // own higher/smaller placement (see CubeStage), so the cube keeps full
+    // presence without rising into the text as it tilts toward its top face.
     return 0.42 * 2 * CAM_DIST * Math.tan(MathUtils.degToRad(FOV) / 2);
   }
 
@@ -491,7 +458,6 @@ export class CubeEngine {
     this.shadow.position.y -= this._scale * 0.62;
     this.shadow.scale.setScalar(this._scale * 0.9);
     this.edgeMat.opacity = 0.28 + (1 - travel) * 0.22 + Math.sin(time * 1.4) * 0.04;
-    this.rim.position.x = Math.sin(time * 0.4) * 3 - 1;
 
     /* -------- readable title signal -------- */
     // Title (above the cube) fades in as the cube drops in and stays legible
@@ -514,7 +480,6 @@ export class CubeEngine {
     const next = makeCubeFaces({ isDark, size, images: this._faceImages });
     this.cubeMats.forEach((m, i) => {
       m.map = next.textures[i];
-      m.emissiveMap = next.textures[i];
       m.needsUpdate = true;
     });
     this._faces.dispose();
