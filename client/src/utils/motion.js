@@ -76,11 +76,15 @@ export const staggerContainer = (stagger = 0.09, delay = 0) => ({
 /* Standard viewport config for scroll-triggered reveals */
 export const viewportOnce = { once: true, amount: 0.25 };
 
-/* Page transition used by the router — rise + a whisper of depth. Scale
-   settles at exactly 1 so the transform clears after the transition and
-   fixed-position children (scene canvases) stay viewport-anchored. */
+/* Page transition used by the router — a pure opacity crossfade. Opacity is
+   compositor-only (no layout, no paint of a transform), which keeps route
+   changes buttery even when the incoming page mounts heavy 3D, and — unlike a
+   y/scale transform — never turns <motion.main> into a containing block, so
+   Home's fixed scene canvases (journey, cube) stay viewport-anchored during
+   the transition. Quick asymmetric timing (fast out, gentle in) hides the
+   mode="wait" hand-off. */
 export const pageTransition = {
-  initial: { opacity: 0, y: 20, scale: 0.99 },
-  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.55, ease: EASE } },
-  exit: { opacity: 0, y: -14, scale: 0.995, transition: { duration: 0.3, ease: EASE } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.4, ease: EASE } },
+  exit: { opacity: 0, transition: { duration: 0.18, ease: EASE } },
 };

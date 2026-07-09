@@ -61,16 +61,48 @@ const SplineScene = ({ scene, className, loading, fallback = null, onLoad, ...re
   const [containerRef, near] = useNearViewport({ margin: "1600px" });
   const appRef = useRef(null);
 
-  /* Stage 2: once near, wait for a lull in main-thread work before mounting
-     the runtime so scene build + shader compile never land mid-scroll. */
+  /* Stage 2: once near, wait for a lull in main-thread work AND a lull in
+     scrolling before mounting the runtime, so the one unavoidable cost —
+     scene build + shader compile, a synchronous multi-hundred-ms hit — never
+     lands mid-scroll where it would drop frames. We only engage after the
+     wheel/touch has been quiet for a beat; otherwise we wait for the next idle
+     slot and re-check. */
   useEffect(() => {
     if (!near || engaged) return;
-    if ("requestIdleCallback" in window) {
-      const id = requestIdleCallback(() => setEngaged(true), { timeout: 900 });
-      return () => cancelIdleCallback(id);
-    }
-    const id = setTimeout(() => setEngaged(true), 200);
-    return () => clearTimeout(id);
+    let cancelled = false;
+    let idleId;
+    let timeoutId;
+    let lastScroll = 0;
+    const QUIET_MS = 180;
+
+    const onScroll = () => {
+      lastScroll = performance.now();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const attempt = () => {
+      if (cancelled) return;
+      if (performance.now() - lastScroll > QUIET_MS) {
+        setEngaged(true);
+        return;
+      }
+      schedule(); // still scrolling — try again next idle slot
+    };
+    const schedule = () => {
+      if ("requestIdleCallback" in window) {
+        idleId = requestIdleCallback(attempt, { timeout: 1200 });
+      } else {
+        timeoutId = setTimeout(attempt, 200);
+      }
+    };
+    schedule();
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("scroll", onScroll);
+      if (idleId !== undefined && "cancelIdleCallback" in window) cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    };
   }, [near, engaged]);
 
   /* The Spline runtime keeps rendering (and re-rendering on every mousemove,

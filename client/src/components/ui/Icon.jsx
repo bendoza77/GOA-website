@@ -7,6 +7,7 @@ import {
   Mail, Phone, Send, Zap, CheckCircle2, Plus, Minus, Search, BookOpen,
   GraduationCap, TrendingUp, Award, Circle, ArrowLeft, ArrowDown, Flame,
   Cpu, Wifi, Radio, Sun, Moon, PlayCircle, Video, UserPlus, Lightbulb,
+  Volume2, VolumeX,
 } from "lucide-react";
 
 /**
@@ -22,6 +23,7 @@ const REGISTRY = {
   Mail, Phone, Send, Zap, CheckCircle2, Plus, Minus, Search, BookOpen,
   GraduationCap, TrendingUp, Award, Circle, ArrowLeft, ArrowDown, Flame,
   Cpu, Wifi, Radio, Sun, Moon, PlayCircle, Video, UserPlus, Lightbulb,
+  Volume2, VolumeX,
 };
 
 const Icon = ({ name, ...props }) => {

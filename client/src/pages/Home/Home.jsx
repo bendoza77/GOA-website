@@ -1,7 +1,9 @@
 import ScrollJourney from "../../components/3d/scroll/ScrollJourney.jsx";
+import CubeStage from "../../components/3d/cube/CubeStage.jsx";
 import DepthDust from "../../components/backgrounds/DepthDust.jsx";
 import CinematicIntro from "../../components/sections/CinematicIntro.jsx";
 import Hero from "../../components/sections/Hero.jsx";
+import VideoSection from "../../components/sections/CinematicVideo/VideoSection.jsx";
 import PartnersMarquee from "../../components/sections/PartnersMarquee.jsx";
 import FeaturesSection from "../../components/sections/FeaturesSection.jsx";
 import CoursesPreview from "../../components/sections/CoursesPreview.jsx";
@@ -11,6 +13,7 @@ import MentorsPreview from "../../components/sections/MentorsPreview.jsx";
 import TestimonialsSection from "../../components/sections/TestimonialsSection.jsx";
 import FAQSection from "../../components/sections/FAQSection.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
+import RobotShowcase from "../../components/sections/RobotShowcase.jsx";
 
 /**
  * Home — two acts.
@@ -32,7 +35,13 @@ const Home = () => (
     <ScrollJourney />
     <DepthDust />
     <CinematicIntro />
+    {/* Act two: the hero cube falls in, reveals every side, then flies into
+        the Hero's reserved right-hand slot and docks (CubeStage owns its own
+        scroll runway, so it slots cleanly between the ride and the hero). */}
+    <CubeStage />
     <Hero />
+    {/* Cinematic act: fullscreen video that morphs into a physical TV. */}
+    <VideoSection />
     <PartnersMarquee />
     <FeaturesSection />
     <CoursesPreview />
@@ -42,6 +51,8 @@ const Home = () => (
     <TestimonialsSection />
     <FAQSection />
     <CTASection />
+    {/* Interactive 3D finale — the draggable robot, at the very bottom of Home */}
+    <RobotShowcase />
   </>
 );
 

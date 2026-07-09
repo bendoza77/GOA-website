@@ -106,9 +106,10 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Right — open stage: the journey scene (portal burst → gathering AI
-          core) plays here unobstructed. No DOM on purpose. */}
-      <div aria-hidden="true" className="hidden min-h-[420px] lg:block" />
+      {/* Right — open stage / cube dock. The hero cube act (CubeStage) flies
+          in and pixel-locks to this slot, becoming part of the hero. Kept
+          empty on purpose; id is the dock target the CubeEngine tracks. */}
+      <div id="hero-cube-slot" aria-hidden="true" className="hidden min-h-[420px] lg:block" />
     </div>
   </section>
   );
