@@ -54,6 +54,18 @@
         }
       })();
     </script>
+
+    <!-- Set <html lang> before first paint to match the saved language -->
+    <script>
+      (function () {
+        try {
+          var lng = localStorage.getItem("goa-lang");
+          document.documentElement.setAttribute("lang", lng === "ka" ? "ka" : "en");
+        } catch (e) {
+          document.documentElement.setAttribute("lang", "en");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

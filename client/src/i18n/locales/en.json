@@ -1,0 +1,464 @@
+{
+  "lang": {
+    "switch": "Language",
+    "en": "English",
+    "ka": "ქართული"
+  },
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "mentors": "Mentors",
+    "about": "About",
+    "apply": "Apply now",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "common": {
+    "explore": "Explore",
+    "readMore": "Read",
+    "perTrack": "/ track",
+    "lessons": "lessons",
+    "step": "Step",
+    "loading": "LOADING",
+    "initialising": "INITIALISING",
+    "reserve": "Reserve",
+    "by": "By"
+  },
+  "meta": {
+    "home": {
+      "title": "Goal-Oriented Academy — Engineer your future",
+      "description": "A premium, outcome-driven programming academy. Learn by building real software, mentored by engineers who ship."
+    },
+    "about": {
+      "title": "About",
+      "description": "Our mission, values and the GOA journey — turning ambition into shipped software."
+    },
+    "courses": {
+      "title": "Courses",
+      "description": "Project-first tracks across the modern stack, each mapped to a real hiring signal."
+    },
+    "mentors": {
+      "title": "Mentors",
+      "description": "Learn from working engineers and designers at the teams you admire."
+    },
+    "community": {
+      "title": "Community",
+      "description": "Join 45,000+ builders reviewing PRs, sharing wins and opening doors around the clock."
+    },
+    "events": {
+      "title": "Events",
+      "description": "Live workshops, talks, hackathons and hiring fairs — most open to everyone."
+    },
+    "successStories": {
+      "title": "Success Stories",
+      "description": "Real people, real transformations. The before, the after, and the number that changed."
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "Field notes from GOA mentors on shipping modern software and building a career."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Questions about tracks, scholarships, hiring or mentoring? Let's talk."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you're after moved, shipped, or never existed."
+    }
+  },
+  "hero": {
+    "badge": "Cohort 12 · Now enrolling",
+    "title": "Engineer your future in",
+    "titleHighlight": "code",
+    "lead": "A premium, outcome-driven programming academy. Learn by building real software, mentored by engineers who ship at the companies you admire.",
+    "exploreCourses": "Explore courses",
+    "howItWorks": "How it works"
+  },
+  "partners": {
+    "graduatesShipAt": "Our graduates ship at",
+    "trustedBy": "Trusted by builders working at"
+  },
+  "features": {
+    "eyebrow": "Why GOA",
+    "title": "A learning system built for real outcomes",
+    "description": "Everything is engineered around one goal: turning your effort into a career you're proud of.",
+    "items": [
+      { "title": "Build real software", "desc": "No toy exercises. Ship production-grade projects to a real repo, reviewed like a real PR." },
+      { "title": "1:1 senior mentorship", "desc": "Paired with engineers from top product teams who unblock you in minutes, not days." },
+      { "title": "Outcome-driven tracks", "desc": "Every module maps to a hiring signal. You graduate with a portfolio recruiters trust." },
+      { "title": "Modern stack, always", "desc": "React 19, TypeScript, edge runtimes, AI tooling. We teach what teams ship today." },
+      { "title": "Learn in the open", "desc": "Work in cohorts, review each other's code, and grow inside a 45k-strong community." },
+      { "title": "Career acceleration", "desc": "Mock interviews, referrals, and salary negotiation coaching until you sign the offer." }
+    ]
+  },
+  "coursesPreview": {
+    "eyebrow": "Curriculum",
+    "title": "Tracks that lead somewhere",
+    "description": "Pick a path or combine them. Every track is project-first and mapped to real hiring signals.",
+    "viewAll": "View all courses"
+  },
+  "journey": {
+    "eyebrow": "The path",
+    "title": "From first commit to signed offer",
+    "description": "A clear, guided journey — you always know what to do next and why it matters.",
+    "items": [
+      { "title": "Onboard & assess", "desc": "A short placement maps your starting point and sets a personalised roadmap toward your goal role." },
+      { "title": "Learn by building", "desc": "Every week you ship a real project. Concepts land because you use them immediately, in code." },
+      { "title": "Get reviewed", "desc": "Senior mentors review your work like a real PR — architecture, readability, edge cases, the lot." },
+      { "title": "Grow in the open", "desc": "Pair with your cohort, contribute to community projects, and build a track record recruiters trust." },
+      { "title": "Land the role", "desc": "Mock interviews, referrals and negotiation coaching carry you across the line to signed offer." }
+    ]
+  },
+  "mentorsSection": {
+    "eyebrow": "Mentorship",
+    "title": "Learn from people who ship",
+    "description": "Every mentor is a working engineer or designer from a team you'd love to join — invested in your next step.",
+    "meetAll": "Meet all mentors"
+  },
+  "testimonials": {
+    "eyebrow": "Loved by learners",
+    "title": "Careers changed, in their words",
+    "description": "Thousands have used GOA to break in, level up and land the role they were after.",
+    "items": [
+      { "quote": "I went from self-taught and stuck to a front-end role at a product company in five months. The mentorship was the difference.", "role": "Front-End Engineer @ Notion" },
+      { "quote": "GOA's project-first approach meant my portfolio actually looked like a senior's. Recruiters noticed immediately.", "role": "Full-Stack Dev @ Shopify" },
+      { "quote": "The AI track is unreal. I shipped a RAG product during the cohort and it became my company's flagship feature.", "role": "AI Engineer @ Scale" },
+      { "quote": "Best learning community I've been part of. Someone is always online to review your PR at 2am. Wild energy.", "role": "Software Engineer @ Datadog" },
+      { "quote": "I doubled my salary and finally understand system design. The interview prep track paid for itself in a week.", "role": "Backend Engineer @ Twilio" },
+      { "quote": "As a career switcher from marketing, I never thought I could code. GOA made it feel possible — then made it real.", "role": "Mobile Developer @ Duolingo" }
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Questions, answered",
+    "description": "Everything you need to know before you join a cohort. Still curious? Reach out any time.",
+    "quickAnswers": "Quick answers",
+    "items": [
+      { "q": "Do I need prior experience to join?", "a": "No. Our tracks start from fundamentals and ramp to job-ready. If you already code, a placement quiz drops you into the right module." },
+      { "q": "How much time should I commit each week?", "a": "Plan for 12–18 hours per week. Cohorts are flexible and fully remote, with recorded sessions and async mentor support." },
+      { "q": "What makes GOA different from a bootcamp?", "a": "We are outcome-driven and project-first. You build real, reviewed software and graduate with a portfolio and a hiring network — not just a certificate." },
+      { "q": "Is there career support after I finish?", "a": "Yes. You keep lifetime access to career coaching, mock interviews, referrals and our alumni network until you land the role you want." },
+      { "q": "Are there payment plans or scholarships?", "a": "We offer monthly installments and need-based scholarships. Around 20% of every cohort joins on some form of assistance." },
+      { "q": "What if it's not for me?", "a": "There's a 14-day, no-questions-asked guarantee. If GOA isn't the right fit, you get a full refund." }
+    ]
+  },
+  "cta": {
+    "default": {
+      "eyebrow": "Ready when you are",
+      "title": "Start building the career you actually want",
+      "description": "Join the next cohort of Goal-Oriented Academy and turn your ambition into shipped, reviewed, hireable work.",
+      "primary": "Apply now",
+      "secondary": "Browse courses"
+    },
+    "community": {
+      "eyebrow": "Join us",
+      "title": "Come build with 45,000 people who get it",
+      "description": "Enroll in a cohort and get instant access to the community that turns momentum into offers.",
+      "primary": "Join a cohort",
+      "secondary": "See events"
+    },
+    "events": {
+      "eyebrow": "Never miss one",
+      "title": "Get every event in your inbox",
+      "description": "Members get priority access, recordings and exclusive AMAs with mentors from top product teams.",
+      "primary": "Become a member",
+      "secondary": "Explore courses"
+    },
+    "mentors": {
+      "eyebrow": "Become a mentor",
+      "title": "Shipped something you're proud of? Pay it forward.",
+      "description": "Join our mentor network, sharpen your leadership, and help engineer the next generation of builders.",
+      "primary": "Apply to mentor",
+      "secondary": "See the community"
+    },
+    "stories": {
+      "eyebrow": "Your turn",
+      "title": "The next story on this page could be yours",
+      "description": "Join a cohort, do the work, and let the outcome speak for itself. We'll be with you the whole way."
+    }
+  },
+  "about": {
+    "header": {
+      "eyebrow": "Our story",
+      "title": "We exist to turn ambition into",
+      "highlight": "shipped software",
+      "description": "Goal-Oriented Academy is a modern programming school built on one belief: you learn to build by building — mentored, in the open, with real outcomes."
+    },
+    "mission": {
+      "eyebrow": "Mission",
+      "title": "A different kind of academy — obsessed with what you can build",
+      "lead": "Most learning stops at tutorials. We start where they end. Every week you ship a real project, get it reviewed like a professional pull request, and grow inside a community of people chasing the same goal.",
+      "points": [
+        "Project-first, not lecture-first",
+        "Senior mentorship on your actual code",
+        "A network that lasts long after you graduate"
+      ]
+    },
+    "values": {
+      "eyebrow": "What we value",
+      "title": "Principles that shape everything we build",
+      "items": [
+        { "title": "Outcomes over hours", "desc": "We measure progress by what you can build and prove, not seat time." },
+        { "title": "Craft is culture", "desc": "We sweat the details — in our teaching, our tooling and your code." },
+        { "title": "Mentorship first", "desc": "Real humans who have shipped, invested in your specific next step." },
+        { "title": "Open & remote", "desc": "Talent is everywhere. Our community and cohorts span the globe." }
+      ]
+    },
+    "journey": {
+      "eyebrow": "How it works",
+      "title": "The GOA journey, end to end",
+      "description": "A guided path from your first commit to a signed offer — you always know the next move."
+    }
+  },
+  "coursesPage": {
+    "header": {
+      "eyebrow": "Curriculum",
+      "title": "Courses that turn effort into",
+      "highlight": "outcomes",
+      "description": "Project-first tracks across the modern stack — each mapped to a real hiring signal. Filter to find your path."
+    },
+    "empty": "No courses in this category yet — check back soon.",
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Invest in the version of you that ships",
+      "description": "Transparent pricing, flexible plans, and a guarantee. Scholarships available for every cohort.",
+      "guarantee": "* Job guarantee applies to eligible Career Program students. Terms apply.",
+      "mostPopular": "Most popular"
+    }
+  },
+  "courses": {
+    "categories": {
+      "all": "All",
+      "frontend": "Front-End",
+      "fullstack": "Full-Stack",
+      "ai": "AI",
+      "cloud": "Cloud",
+      "mobile": "Mobile",
+      "interview": "Interview"
+    },
+    "items": [
+      { "title": "Front-End Architect", "level": "Intermediate", "duration": "16 weeks", "tag": "Most popular", "blurb": "Master React 19, design systems, animation and performance to build interfaces that win awards." },
+      { "title": "Full-Stack Engineer", "level": "Beginner → Job-ready", "duration": "28 weeks", "tag": "Career track", "blurb": "Go from first line of code to deploying full products across the modern web stack." },
+      { "title": "AI Application Engineering", "level": "Advanced", "duration": "12 weeks", "tag": "New", "blurb": "Ship AI-native products: RAG, agents, evals and tool-use with production guardrails." },
+      { "title": "Cloud & DevOps", "level": "Intermediate", "duration": "14 weeks", "tag": "In demand", "blurb": "Containers, CI/CD, observability and infrastructure-as-code the way real teams run it." },
+      { "title": "Mobile with React Native", "level": "Intermediate", "duration": "12 weeks", "tag": "Cross-platform", "blurb": "One codebase, native feel. Design, build and publish polished iOS + Android apps." },
+      { "title": "DSA & Interview Prep", "level": "All levels", "duration": "8 weeks", "tag": "Get hired", "blurb": "The patterns, not the memorisation. Crack technical interviews with structured practice." }
+    ]
+  },
+  "plans": [
+    {
+      "name": "Single Track",
+      "tagline": "Focus on one skill, master it.",
+      "price": "$1,490",
+      "period": "track",
+      "cta": "Choose track",
+      "features": ["One full course track", "1:1 mentor sessions", "Project reviews", "Community access", "Certificate"]
+    },
+    {
+      "name": "Career Program",
+      "tagline": "Go from zero to hired.",
+      "price": "$2,890",
+      "period": "program",
+      "cta": "Start career track",
+      "features": ["Everything in Single Track", "Multiple tracks bundled", "Weekly live mentorship", "Mock interviews + referrals", "Lifetime career support", "Job guarantee*"]
+    },
+    {
+      "name": "Teams",
+      "tagline": "Upskill your whole team.",
+      "price": "Custom",
+      "period": "",
+      "cta": "Talk to us",
+      "features": ["Volume licensing", "Dedicated success manager", "Custom curriculum", "Progress dashboards", "Priority support"]
+    }
+  ],
+  "mentorsData": {
+    "items": [
+      { "role": "Principal FE Engineer", "focus": "React · Design Systems", "bio": "Ships design systems used by millions. Obsessed with motion and performance." },
+      { "role": "Staff Engineer", "focus": "Full-Stack · Payments", "bio": "Built payment flows at scale. Teaches resilient architecture the pragmatic way." },
+      { "role": "ML Engineer", "focus": "AI · Agents", "bio": "Researches safe, useful AI systems. Turns LLM magic into shippable products." },
+      { "role": "Platform Lead", "focus": "Cloud · DevOps", "bio": "Runs global edge infra. Makes Kubernetes feel approachable, not terrifying." },
+      { "role": "Senior Product Designer", "focus": "UX · Product", "bio": "Crafts interfaces that feel inevitable. Bridges design and engineering." },
+      { "role": "Mobile Architect", "focus": "React Native · Motion", "bio": "Native-quality apps with a web team. Reanimated wizard and DX advocate." }
+    ]
+  },
+  "mentorsPage": {
+    "header": {
+      "eyebrow": "The people",
+      "title": "Mentors who have",
+      "highlight": "shipped it",
+      "description": "Working engineers and designers from the teams you admire — here to unblock you, review your code, and push your craft."
+    }
+  },
+  "blogPage": {
+    "header": {
+      "eyebrow": "Field notes",
+      "title": "Ideas, engineering &",
+      "highlight": "career craft",
+      "description": "Deep dives from GOA mentors on shipping modern software and building a career you're proud of."
+    },
+    "newsletterTitle": "Get field notes in your inbox",
+    "newsletterLead": "One thoughtful email a week. No spam, no fluff — just sharp writing on code and careers."
+  },
+  "blog": {
+    "categories": {
+      "all": "All",
+      "engineering": "Engineering",
+      "learning": "Learning",
+      "ai": "AI",
+      "design": "Design",
+      "career": "Career"
+    },
+    "posts": [
+      { "title": "View Transitions in React 19: the new default for polish", "categoryLabel": "Engineering", "readTime": "8 min", "date": "Jun 28, 2026", "excerpt": "How to layer buttery route and element transitions into any React app without a physics degree." },
+      { "title": "Why 'learn by building' beats tutorials every time", "categoryLabel": "Learning", "readTime": "6 min", "date": "Jun 20, 2026", "excerpt": "The science of retrieval, projects and productive struggle — and how we designed GOA around it." },
+      { "title": "RAG that survives real users: a field guide", "categoryLabel": "AI", "readTime": "11 min", "date": "Jun 12, 2026", "excerpt": "Chunking, retrieval quality, evals and the unglamorous glue that makes AI features trustworthy." },
+      { "title": "Design systems that scale without slowing you down", "categoryLabel": "Design", "readTime": "7 min", "date": "Jun 04, 2026", "excerpt": "Tokens, primitives and governance — the pragmatic path from chaos to a system teams love." },
+      { "title": "Cracking system design without memorising anything", "categoryLabel": "Career", "readTime": "9 min", "date": "May 27, 2026", "excerpt": "A repeatable framework for reasoning about scale, trade-offs and the interviewer's real question." },
+      { "title": "Going edge-first: latency wins that users actually feel", "categoryLabel": "Engineering", "readTime": "10 min", "date": "May 18, 2026", "excerpt": "Where the edge helps, where it hurts, and how to architect for a genuinely global audience." }
+    ]
+  },
+  "communityPage": {
+    "header": {
+      "eyebrow": "Community",
+      "title": "You're never",
+      "highlight": "alone",
+      "description": "A 45,000-strong network of learners, alumni and mentors — reviewing PRs, sharing wins and opening doors, around the clock."
+    },
+    "section": {
+      "eyebrow": "Inside the community",
+      "title": "Channels for every part of the journey",
+      "description": "From your first stuck moment to your first offer, there's a room full of people who've been there."
+    }
+  },
+  "community": {
+    "stats": [
+      { "label": "Members" },
+      { "label": "Projects / week" },
+      { "label": "Countries" },
+      { "label": "Always online" }
+    ],
+    "channels": [
+      { "desc": "Stuck? Answers in minutes, any timezone." },
+      { "desc": "Ship a PR, get senior-level feedback." },
+      { "desc": "Referrals and roles from hiring partners." },
+      { "desc": "Celebrate what the community is building." },
+      { "desc": "Your crew — accountability and momentum." },
+      { "desc": "Live workshops, AMAs and study jams." }
+    ]
+  },
+  "contact": {
+    "header": {
+      "eyebrow": "Say hello",
+      "title": "Let's talk about your",
+      "highlight": "next move",
+      "description": "Questions about a track, scholarships, hiring partnerships or mentoring? We usually reply within one business day."
+    },
+    "methods": {
+      "email": "Email us",
+      "call": "Call us",
+      "find": "Find us",
+      "location": "Remote-first · Berlin · San Francisco"
+    },
+    "followAlong": "Follow along",
+    "form": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "topic": "What are you interested in?",
+      "message": "Your message",
+      "send": "Send message",
+      "sending": "Sending…",
+      "sentTitle": "Message sent",
+      "sentBody": "Thanks for reaching out. Our team will get back to you within one business day.",
+      "sendAnother": "Send another"
+    }
+  },
+  "eventsPage": {
+    "header": {
+      "eyebrow": "What's on",
+      "title": "Live workshops, talks &",
+      "highlight": "hiring fairs",
+      "description": "Learn in real time with mentors and peers. Every event is free for GOA members — and most are open to everyone."
+    }
+  },
+  "events": {
+    "items": [
+      { "title": "GOA React 19 Deep-Dive", "type": "Workshop", "month": "Jul", "time": "17:00 CET", "mode": "Online", "desc": "Build a motion-rich interface live, from Suspense streaming to view transitions.", "speaker": "Aria Nova" },
+      { "title": "Shipping AI Agents in Production", "type": "Talk", "month": "Jul", "time": "18:30 CET", "mode": "Online", "desc": "Patterns, evals and guardrails for agents that survive contact with real users.", "speaker": "Lena Koto" },
+      { "title": "GOA Global Hiring Fair", "type": "Career", "month": "Aug", "time": "All day", "mode": "Hybrid · Berlin", "desc": "Meet 40+ hiring partners, take live technical interviews and walk away with offers.", "speaker": "GOA Careers" },
+      { "title": "Interface Motion Jam", "type": "Hackathon", "month": "Aug", "time": "Weekend", "mode": "Online", "desc": "48 hours to design and ship the most delightful micro-interaction. Prizes + glory.", "speaker": "Sana Riel" },
+      { "title": "Zero-to-Deploy Cloud Lab", "type": "Workshop", "month": "Aug", "time": "16:00 CET", "mode": "Online", "desc": "Containerise, pipeline and ship an app to the edge with full observability.", "speaker": "Diego Ferro" },
+      { "title": "Alumni & Mentor Mixer", "type": "Community", "month": "Aug", "time": "19:00 CET", "mode": "Hybrid · SF", "desc": "Reconnect, recruit and celebrate the cohort that just crossed the finish line.", "speaker": "GOA Community" }
+    ]
+  },
+  "storiesPage": {
+    "header": {
+      "eyebrow": "Proof",
+      "title": "Real people, real",
+      "highlight": "transformations",
+      "description": "No survivorship theatre — just the before, the after, and the number that changed. This is what outcome-driven looks like."
+    },
+    "salaryChange": "Salary change",
+    "toHired": "To hired",
+    "monthsSuffix": "mo"
+  },
+  "stories": {
+    "items": [
+      { "before": "Self-taught, stuck", "after": "Front-End Engineer @ Notion", "quote": "The mentorship turned scattered knowledge into real confidence. I build things now I'd have called impossible last year.", "track": "Front-End Architect" },
+      { "before": "Support agent", "after": "Full-Stack Dev @ Shopify", "quote": "I switched careers entirely. GOA's projects were the portfolio that got me the interview — and the skills that got me the job.", "track": "Full-Stack Engineer" },
+      { "before": "Junior dev, plateaued", "after": "AI Engineer @ Scale", "quote": "I shipped a RAG product in the cohort that became my company's flagship. GOA moved me from junior to the AI team.", "track": "AI Application Engineering" },
+      { "before": "CS grad, no offers", "after": "Software Engineer @ Datadog", "quote": "The interview prep track was surgical. I finally understood the patterns and walked into offers with three companies.", "track": "DSA & Interview Prep" }
+    ]
+  },
+  "stats": {
+    "hero": [
+      { "label": "Developers trained" },
+      { "label": "Hired within 6 months" },
+      { "label": "Hiring partners" },
+      { "label": "Average rating" }
+    ],
+    "impact": [
+      { "label": "Average salary uplift" },
+      { "label": "Projects shipped weekly" },
+      { "label": "Community members" },
+      { "label": "Mentor availability" }
+    ]
+  },
+  "newsletter": {
+    "placeholder": "you@domain.com",
+    "subscribe": "Subscribe",
+    "success": "You're on the list. Welcome to GOA.",
+    "join": "Join the newsletter"
+  },
+  "footer": {
+    "badge": "Interactive 3D",
+    "headline": "Learning that feels",
+    "headlineHighlight": "alive",
+    "blurb": "At GOA you don't just watch tutorials — you build immersive experiences that capture attention. Go on, drag the robot around.",
+    "startBuilding": "Start building",
+    "poweredBy": "Powered by Spline",
+    "brandDescription": "A premium programming academy engineering the next generation of developers — learn by building, mentored by people who ship.",
+    "rights": "Engineered with care.",
+    "columns": [
+      {
+        "title": "Learn",
+        "links": ["All Courses", "Mentors", "Events", "Success Stories"]
+      },
+      {
+        "title": "Company",
+        "links": ["About", "Community", "Blog", "Contact"]
+      },
+      {
+        "title": "Resources",
+        "links": ["Curriculum", "Career Support", "FAQ", "Newsletter"]
+      }
+    ]
+  },
+  "notFound": {
+    "signalLost": "Signal lost",
+    "title": "This route never compiled",
+    "description": "The page you're after moved, shipped, or never existed. Let's get you back to solid ground.",
+    "backHome": "Back home",
+    "browseCourses": "Browse courses"
+  }
+}

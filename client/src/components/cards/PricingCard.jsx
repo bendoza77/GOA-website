@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import GlassPanel from "../ui/GlassPanel.jsx";
 import Button from "../ui/Button.jsx";
 import Badge from "../ui/Badge.jsx";
@@ -5,7 +6,9 @@ import Icon from "../ui/Icon.jsx";
 import { cn } from "../../utils/cn.js";
 
 /** PricingCard — plan tile; `featured` gets the neon spotlight treatment. */
-const PricingCard = ({ plan }) => (
+const PricingCard = ({ plan }) => {
+  const { t } = useTranslation();
+  return (
   <GlassPanel
     hover
     tilt
@@ -16,7 +19,7 @@ const PricingCard = ({ plan }) => (
   >
     {plan.featured && (
       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-        <Badge tone="neon" dot pixel>Most popular</Badge>
+        <Badge tone="neon" dot pixel>{t("coursesPage.pricing.mostPopular")}</Badge>
       </div>
     )}
     <h3 className="h3 text-snow">{plan.name}</h3>
@@ -46,6 +49,7 @@ const PricingCard = ({ plan }) => (
       {plan.cta}
     </Button>
   </GlassPanel>
-);
+  );
+};
 
 export default PricingCard;

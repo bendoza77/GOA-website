@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import i18n from "../../i18n/index.js";
 import { markIntroDone } from "../../utils/introGate.js";
 import { LogoMark } from "../ui/Logo.jsx";
 
@@ -45,7 +46,7 @@ const LoadingScreen = ({ minDuration = 1400 }) => {
       const progress = Math.round(eased * 100);
       if (barRef.current) barRef.current.style.width = `${progress}%`;
       if (counterRef.current) {
-        counterRef.current.textContent = `${String(progress).padStart(3, "0")}% · INITIALISING`;
+        counterRef.current.textContent = `${String(progress).padStart(3, "0")}% · ${i18n.t("common.initialising")}`;
       }
       if (t < 1) raf = requestAnimationFrame(tick);
       else {
@@ -90,7 +91,7 @@ const LoadingScreen = ({ minDuration = 1400 }) => {
               />
             </div>
             <div ref={counterRef} className="font-mono text-xs tracking-[0.3em] text-fog">
-              000% · INITIALISING
+              000% · {i18n.t("common.initialising")}
             </div>
           </div>
         </motion.div>

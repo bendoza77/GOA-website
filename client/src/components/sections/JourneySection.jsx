@@ -1,20 +1,25 @@
+import { useTranslation } from "react-i18next";
 import Section from "../layout/Section.jsx";
 import SectionTitle from "../ui/SectionTitle.jsx";
 import Timeline from "../ui/Timeline.jsx";
-import { JOURNEY } from "../../data/journey.js";
+import { useJourney } from "../../data/journey.js";
 
 /** JourneySection — the five-step learner journey on an animated spine. */
-const JourneySection = () => (
+const JourneySection = () => {
+  const { t } = useTranslation();
+  const journey = useJourney();
+  return (
   <Section id="journey" className="relative">
     <SectionTitle
-      eyebrow="The path"
-      title="From first commit to signed offer"
-      description="A clear, guided journey — you always know what to do next and why it matters."
+      eyebrow={t("journey.eyebrow")}
+      title={t("journey.title")}
+      description={t("journey.description")}
     />
     <div className="mt-16">
-      <Timeline steps={JOURNEY} />
+      <Timeline steps={journey} />
     </div>
   </Section>
-);
+  );
+};
 
 export default JourneySection;

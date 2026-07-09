@@ -1,63 +1,16 @@
-/** Mentor roster. Avatars use initials + brand gradient (no external assets). */
-export const MENTORS = [
-  {
-    id: "aria-nova",
-    name: "Aria Nova",
-    role: "Principal FE Engineer",
-    company: "Vercel",
-    focus: "React · Design Systems",
-    initials: "AN",
-    accent: "green",
-    bio: "Ships design systems used by millions. Obsessed with motion and performance.",
-  },
-  {
-    id: "marcus-vale",
-    name: "Marcus Vale",
-    role: "Staff Engineer",
-    company: "Stripe",
-    focus: "Full-Stack · Payments",
-    initials: "MV",
-    accent: "lime",
-    bio: "Built payment flows at scale. Teaches resilient architecture the pragmatic way.",
-  },
-  {
-    id: "lena-koto",
-    name: "Lena Koto",
-    role: "ML Engineer",
-    company: "Anthropic",
-    focus: "AI · Agents",
-    initials: "LK",
-    accent: "neon",
-    bio: "Researches safe, useful AI systems. Turns LLM magic into shippable products.",
-  },
-  {
-    id: "diego-ferro",
-    name: "Diego Ferro",
-    role: "Platform Lead",
-    company: "Cloudflare",
-    focus: "Cloud · DevOps",
-    initials: "DF",
-    accent: "green",
-    bio: "Runs global edge infra. Makes Kubernetes feel approachable, not terrifying.",
-  },
-  {
-    id: "sana-riel",
-    name: "Sana Riel",
-    role: "Senior Product Designer",
-    company: "Linear",
-    focus: "UX · Product",
-    initials: "SR",
-    accent: "lime",
-    bio: "Crafts interfaces that feel inevitable. Bridges design and engineering.",
-  },
-  {
-    id: "omar-blaze",
-    name: "Omar Blaze",
-    role: "Mobile Architect",
-    company: "Framer",
-    focus: "React Native · Motion",
-    initials: "OB",
-    accent: "neon",
-    bio: "Native-quality apps with a web team. Reanimated wizard and DX advocate.",
-  },
+import { useLocalized } from "../i18n/useLocalized.js";
+
+/**
+ * Mentor roster. Names and companies are proper nouns (kept as-is); role,
+ * focus and bio are merged from i18n by position.
+ */
+const MENTORS_BASE = [
+  { id: "aria-nova", name: "Aria Nova", company: "Vercel", initials: "AN", accent: "green" },
+  { id: "marcus-vale", name: "Marcus Vale", company: "Stripe", initials: "MV", accent: "lime" },
+  { id: "lena-koto", name: "Lena Koto", company: "Anthropic", initials: "LK", accent: "neon" },
+  { id: "diego-ferro", name: "Diego Ferro", company: "Cloudflare", initials: "DF", accent: "green" },
+  { id: "sana-riel", name: "Sana Riel", company: "Linear", initials: "SR", accent: "lime" },
+  { id: "omar-blaze", name: "Omar Blaze", company: "Framer", initials: "OB", accent: "neon" },
 ];
+
+export const useMentors = () => useLocalized(MENTORS_BASE, "mentorsData.items");

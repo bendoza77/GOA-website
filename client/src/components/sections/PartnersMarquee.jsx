@@ -1,12 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { PARTNERS } from "../../data/community.js";
 import Marquee from "../ui/Marquee.jsx";
 
 /** PartnersMarquee — "where our grads work" logo strip (text wordmarks). */
-const PartnersMarquee = () => (
+const PartnersMarquee = () => {
+  const { t } = useTranslation();
+  return (
   <div className="section !py-14">
     <div className="container-goa">
       <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.3em] text-fog">
-        Our graduates ship at
+        {t("partners.graduatesShipAt")}
       </p>
     </div>
     <Marquee speed={38}>
@@ -20,6 +23,7 @@ const PartnersMarquee = () => (
       ))}
     </Marquee>
   </div>
-);
+  );
+};
 
 export default PartnersMarquee;

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import GlassPanel from "../ui/GlassPanel.jsx";
 import Avatar from "../ui/Avatar.jsx";
 import Icon from "../ui/Icon.jsx";
@@ -6,6 +7,7 @@ import { cn } from "../../utils/cn.js";
 
 /** StoryCard — success story with before → after transformation + metrics. */
 const StoryCard = ({ story }) => {
+  const { t } = useTranslation();
   const a = accent(story.accent);
   return (
     <GlassPanel hover tilt className="group flex h-full flex-col p-7">
@@ -33,11 +35,11 @@ const StoryCard = ({ story }) => {
       <div className="grid grid-cols-2 gap-3 border-t border-slate-line pt-5">
         <div>
           <div className="font-display text-2xl font-bold text-gradient-green">{story.salary}</div>
-          <div className="text-xs text-fog">Salary change</div>
+          <div className="text-xs text-fog">{t("storiesPage.salaryChange")}</div>
         </div>
         <div>
-          <div className="font-display text-2xl font-bold text-snow">{story.months} mo</div>
-          <div className="text-xs text-fog">To hired</div>
+          <div className="font-display text-2xl font-bold text-snow">{story.months} {t("storiesPage.monthsSuffix")}</div>
+          <div className="text-xs text-fog">{t("storiesPage.toHired")}</div>
         </div>
       </div>
     </GlassPanel>

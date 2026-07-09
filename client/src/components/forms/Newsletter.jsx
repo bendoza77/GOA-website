@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
 import { cn } from "../../utils/cn.js";
 
 /** Newsletter — inline email capture (front-end only, simulated success). */
 const Newsletter = ({ className, compact = false }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -22,7 +24,7 @@ const Newsletter = ({ className, compact = false }) => {
         animate={{ opacity: 1, y: 0 }}
         className={cn("inline-flex items-center gap-2 rounded-full border border-neon/30 bg-neon/10 px-5 py-3 text-sm text-neon", className)}
       >
-        <Icon name="CheckCircle2" className="size-4" /> You're on the list. Welcome to GOA.
+        <Icon name="CheckCircle2" className="size-4" /> {t("newsletter.success")}
       </motion.div>
     );
   }
@@ -43,12 +45,12 @@ const Newsletter = ({ className, compact = false }) => {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@domain.com"
+          placeholder={t("newsletter.placeholder")}
           className="h-12 w-full rounded-full border border-slate-line surface-2 pl-11 pr-4 text-sm text-snow outline-none transition-colors placeholder:text-fog focus:border-lime/50"
         />
       </div>
       <Button type="submit" className="h-12 shrink-0" cursorLabel="Join" magnetic>
-        Subscribe
+        {t("newsletter.subscribe")}
         <Icon name="ArrowRight" className="size-4" />
       </Button>
     </form>

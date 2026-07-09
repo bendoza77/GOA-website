@@ -3,105 +3,50 @@
 export const SITE = {
   name: "Goal-Oriented Academy",
   short: "GOA",
-  tagline: "Engineer your future.",
-  description:
-    "A premium programming academy engineering the next generation of developers — learn by building, mentored by people who ship.",
   email: "hello@goa.academy",
   phone: "+1 (555) 012-3489",
-  location: "Remote-first · Berlin · San Francisco",
+};
+
+/** Tab-title brand suffix (kept in Latin across languages). */
+export const TITLE_SUFFIX = "Goal-Oriented Academy";
+
+/**
+ * Route → i18n meta key. Drives the browser-tab <title> and <meta
+ * description> per language (see hooks/useDocumentMeta). Unmatched paths fall
+ * back to the "notFound" key.
+ */
+export const ROUTE_META_KEYS = {
+  "/": "home",
+  "/about": "about",
+  "/courses": "courses",
+  "/mentors": "mentors",
+  "/community": "community",
+  "/events": "events",
+  "/success-stories": "successStories",
+  "/blog": "blog",
+  "/contact": "contact",
 };
 
 /**
- * Per-route document metadata — drives the browser-tab <title> and the
- * meta description on navigation (see hooks/useDocumentMeta + MainLayout).
- * `title` is the page label; it's combined with the brand via TITLE_TEMPLATE.
- * The home route uses its full title verbatim (template skipped).
+ * Primary navigation — routes live in /routes/AppRoutes.jsx. `key` maps to
+ * the label under `nav.<key>` in the locale files.
  */
-export const TITLE_SUFFIX = "Goal-Oriented Academy";
-
-export const PAGE_META = {
-  "/": {
-    title: "Goal-Oriented Academy — Engineer your future",
-    description:
-      "A premium, outcome-driven programming academy. Learn by building real software, mentored by engineers who ship.",
-  },
-  "/about": {
-    title: "About",
-    description: "Our mission, values and the GOA journey — turning ambition into shipped software.",
-  },
-  "/courses": {
-    title: "Courses",
-    description: "Project-first tracks across the modern stack, each mapped to a real hiring signal.",
-  },
-  "/mentors": {
-    title: "Mentors",
-    description: "Learn from working engineers and designers at the teams you admire.",
-  },
-  "/community": {
-    title: "Community",
-    description: "Join 45,000+ builders reviewing PRs, sharing wins and opening doors around the clock.",
-  },
-  "/events": {
-    title: "Events",
-    description: "Live workshops, talks, hackathons and hiring fairs — most open to everyone.",
-  },
-  "/success-stories": {
-    title: "Success Stories",
-    description: "Real people, real transformations. The before, the after, and the number that changed.",
-  },
-  "/blog": {
-    title: "Blog",
-    description: "Field notes from GOA mentors on shipping modern software and building a career.",
-  },
-  "/contact": {
-    title: "Contact",
-    description: "Questions about tracks, scholarships, hiring or mentoring? Let's talk.",
-  },
-  "/404": {
-    title: "Page not found",
-    description: "The page you're after moved, shipped, or never existed.",
-  },
-};
-
-/** Primary navigation — routes live in /routes/AppRoutes.jsx.
- *  Header keeps only the four primary destinations; the deeper pages
- *  (Community, Events, Stories, Blog) stay routed and reachable via
- *  FOOTER_LINKS. */
 export const NAV_LINKS = [
-  { label: "Home", path: "/" },
-  { label: "Courses", path: "/courses" },
-  { label: "Mentors", path: "/mentors" },
-  { label: "About", path: "/about" },
+  { key: "home", path: "/" },
+  { key: "courses", path: "/courses" },
+  { key: "mentors", path: "/mentors" },
+  { key: "about", path: "/about" },
 ];
 
-export const FOOTER_LINKS = [
-  {
-    title: "Learn",
-    links: [
-      { label: "All Courses", path: "/courses" },
-      { label: "Mentors", path: "/mentors" },
-      { label: "Events", path: "/events" },
-      { label: "Success Stories", path: "/success-stories" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", path: "/about" },
-      { label: "Community", path: "/community" },
-      { label: "Blog", path: "/blog" },
-      { label: "Contact", path: "/contact" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Curriculum", path: "/courses" },
-      { label: "Career Support", path: "/success-stories" },
-      { label: "FAQ", path: "/contact" },
-      { label: "Newsletter", path: "/#newsletter" },
-    ],
-  },
+/**
+ * Footer link destinations, grouped by column. Labels + column titles come
+ * from i18n (`footer.columns`) and are zipped onto these paths in the same
+ * order, so structure stays a single source of truth here.
+ */
+export const FOOTER_LINK_PATHS = [
+  ["/courses", "/mentors", "/events", "/success-stories"],
+  ["/about", "/community", "/blog", "/contact"],
+  ["/courses", "/success-stories", "/contact", "/#newsletter"],
 ];
 
 export const SOCIALS = [

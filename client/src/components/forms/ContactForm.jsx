@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import GlassPanel from "../ui/GlassPanel.jsx";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
@@ -10,6 +11,7 @@ import Input from "./Input.jsx";
  * No network / backend (per project scope), just polished UX + validation.
  */
 const ContactForm = () => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState("idle"); // idle | sending | sent
 
   const handleSubmit = (e) => {
@@ -32,12 +34,12 @@ const ContactForm = () => {
             <div className="mb-5 grid size-16 place-items-center rounded-full border border-neon/30 bg-neon/10">
               <Icon name="CheckCircle2" className="size-8 text-neon" />
             </div>
-            <h3 className="h3 text-snow">Message sent</h3>
+            <h3 className="h3 text-snow">{t("contact.form.sentTitle")}</h3>
             <p className="mt-2 max-w-sm text-sm text-fog">
-              Thanks for reaching out. Our team will get back to you within one business day.
+              {t("contact.form.sentBody")}
             </p>
             <Button className="mt-6" variant="outline" onClick={() => setStatus("idle")}>
-              Send another
+              {t("contact.form.sendAnother")}
             </Button>
           </motion.div>
         ) : (
@@ -49,12 +51,12 @@ const ContactForm = () => {
             className="flex flex-col gap-5"
           >
             <div className="grid gap-5 sm:grid-cols-2">
-              <Input label="First name" name="firstName" required />
-              <Input label="Last name" name="lastName" required />
+              <Input label={t("contact.form.firstName")} name="firstName" required />
+              <Input label={t("contact.form.lastName")} name="lastName" required />
             </div>
-            <Input label="Email address" type="email" name="email" required />
-            <Input label="What are you interested in?" name="topic" />
-            <Input label="Your message" name="message" multiline required />
+            <Input label={t("contact.form.email")} type="email" name="email" required />
+            <Input label={t("contact.form.topic")} name="topic" />
+            <Input label={t("contact.form.message")} name="message" multiline required />
             <Button
               type="submit"
               size="lg"
@@ -63,7 +65,7 @@ const ContactForm = () => {
               cursorLabel="Send"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "Sending…" : "Send message"}
+              {status === "sending" ? t("contact.form.sending") : t("contact.form.send")}
               {status !== "sending" && <Icon name="Send" className="size-4" />}
             </Button>
           </motion.form>

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { HERO_STATS } from "../../data/stats.js";
+import { useTranslation } from "react-i18next";
+import { useHeroStats } from "../../data/stats.js";
 import { staggerContainer, fadeUp } from "../../utils/motion.js";
 import Badge from "../ui/Badge.jsx";
 import Button from "../ui/Button.jsx";
@@ -15,6 +16,9 @@ import AnimatedCounter from "../ui/AnimatedCounter.jsx";
  * page" moment. The right half stays open sky for the journey scene.
  */
 const Hero = () => {
+  const { t } = useTranslation();
+  const heroStats = useHeroStats();
+
   /* Scroll-out parallax — as the user scrolls onward, the copy drifts up and
      dissolves, handing the frame back to the 3D world between sections. */
   const sectionRef = useRef(null);
@@ -61,31 +65,28 @@ const Hero = () => {
       >
         <motion.div variants={fadeUp}>
           <Badge dot pixel tone="neon">
-            Cohort 12 · Now enrolling
+            {t("hero.badge")}
           </Badge>
         </motion.div>
 
         <motion.h1 variants={fadeUp} className="h-hero text-balance">
-          Engineer your
-          <br />
-          future in{" "}
-          <span className="text-gradient-green">code</span>
+          {t("hero.title")}{" "}
+          <span className="text-gradient-green">{t("hero.titleHighlight")}</span>
           <span className="text-neon animate-blink">_</span>
         </motion.h1>
 
         <motion.p variants={fadeUp} className="lead max-w-xl">
-          A premium, outcome-driven programming academy. Learn by building real
-          software, mentored by engineers who ship at the companies you admire.
+          {t("hero.lead")}
         </motion.p>
 
         <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">
           <Button to="/courses" size="lg" magnetic glow cursorLabel="Explore">
-            Explore courses
+            {t("hero.exploreCourses")}
             <Icon name="ArrowRight" className="size-4" />
           </Button>
           <Button to="/about" size="lg" variant="secondary" cursorLabel="Watch">
             <Icon name="PlayCircle" className="size-4" />
-            How it works
+            {t("hero.howItWorks")}
           </Button>
         </motion.div>
 
@@ -94,7 +95,7 @@ const Hero = () => {
           variants={fadeUp}
           className="mt-4 grid w-full grid-cols-2 gap-6 border-t border-slate-line pt-8 sm:grid-cols-4"
         >
-          {HERO_STATS.map((s) => (
+          {heroStats.map((s) => (
             <div key={s.label}>
               <div className="font-display text-2xl font-bold text-snow sm:text-3xl">
                 <AnimatedCounter value={s.value} suffix={s.suffix} decimals={s.decimals} className="text-gradient-green" />

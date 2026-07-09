@@ -1,68 +1,17 @@
-export const EVENTS = [
-  {
-    id: "react-summit",
-    title: "GOA React 19 Deep-Dive",
-    type: "Workshop",
-    date: "Jul 18, 2026",
-    time: "17:00 CET",
-    mode: "Online",
-    accent: "green",
-    desc: "Build a motion-rich interface live, from Suspense streaming to view transitions.",
-    speaker: "Aria Nova",
-  },
-  {
-    id: "ai-night",
-    title: "Shipping AI Agents in Production",
-    type: "Talk",
-    date: "Jul 25, 2026",
-    time: "18:30 CET",
-    mode: "Online",
-    accent: "neon",
-    desc: "Patterns, evals and guardrails for agents that survive contact with real users.",
-    speaker: "Lena Koto",
-  },
-  {
-    id: "career-fair",
-    title: "GOA Global Hiring Fair",
-    type: "Career",
-    date: "Aug 02, 2026",
-    time: "All day",
-    mode: "Hybrid · Berlin",
-    accent: "lime",
-    desc: "Meet 40+ hiring partners, take live technical interviews and walk away with offers.",
-    speaker: "GOA Careers",
-  },
-  {
-    id: "design-jam",
-    title: "Interface Motion Jam",
-    type: "Hackathon",
-    date: "Aug 09, 2026",
-    time: "Weekend",
-    mode: "Online",
-    accent: "green",
-    desc: "48 hours to design and ship the most delightful micro-interaction. Prizes + glory.",
-    speaker: "Sana Riel",
-  },
-  {
-    id: "devops-lab",
-    title: "Zero-to-Deploy Cloud Lab",
-    type: "Workshop",
-    date: "Aug 16, 2026",
-    time: "16:00 CET",
-    mode: "Online",
-    accent: "lime",
-    desc: "Containerise, pipeline and ship an app to the edge with full observability.",
-    speaker: "Diego Ferro",
-  },
-  {
-    id: "alumni-mixer",
-    title: "Alumni & Mentor Mixer",
-    type: "Community",
-    date: "Aug 23, 2026",
-    time: "19:00 CET",
-    mode: "Hybrid · SF",
-    accent: "neon",
-    desc: "Reconnect, recruit and celebrate the cohort that just crossed the finish line.",
-    speaker: "GOA Community",
-  },
+import { useLocalized } from "../i18n/useLocalized.js";
+
+/**
+ * Events. `day` and `accent` are structural; `month` (abbreviated) and all
+ * copy are merged from i18n by position, so the date block reads naturally
+ * in every language (e.g. "ივლ 18").
+ */
+const EVENTS_BASE = [
+  { id: "react-summit", day: "18", accent: "green" },
+  { id: "ai-night", day: "25", accent: "neon" },
+  { id: "career-fair", day: "02", accent: "lime" },
+  { id: "design-jam", day: "09", accent: "green" },
+  { id: "devops-lab", day: "16", accent: "lime" },
+  { id: "alumni-mixer", day: "23", accent: "neon" },
 ];
+
+export const useEvents = () => useLocalized(EVENTS_BASE, "events.items");

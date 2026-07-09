@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { SITE, FOOTER_LINKS, SOCIALS } from "../../constants/site.js";
+import { useTranslation } from "react-i18next";
+import { SITE, FOOTER_LINK_PATHS, SOCIALS } from "../../constants/site.js";
 import Logo from "../ui/Logo.jsx";
 import SocialIcon from "../ui/SocialIcon.jsx";
 import Newsletter from "../forms/Newsletter.jsx";
@@ -23,11 +24,15 @@ const ROBOT_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecod
  * reaches the bottom.
  */
 const Footer = () => {
+  const { t } = useTranslation();
+
   /* Pay the runtime-parse + scene-download costs during idle time so the
      robot's first render never janks an active scroll. */
   useEffect(() => {
     warmSplineScene(ROBOT_SCENE);
   }, []);
+
+  const columns = t("footer.columns", { returnObjects: true });
 
   return (
   <footer className="relative mt-24 overflow-hidden border-t border-slate-line bg-ink/60">
@@ -44,23 +49,22 @@ const Footer = () => {
 
         <div className="relative z-10 flex flex-col items-start gap-5">
           <Badge dot pixel tone="neon">
-            Interactive 3D
+            {t("footer.badge")}
           </Badge>
           <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-snow sm:text-4xl">
-            Learning that feels <span className="text-gradient-green">alive</span>
+            {t("footer.headline")} <span className="text-gradient-green">{t("footer.headlineHighlight")}</span>
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-fog">
-            At GOA you don't just watch tutorials — you build immersive
-            experiences that capture attention. Go on, drag the robot around.
+            {t("footer.blurb")}
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <Button to="/courses" size="lg" magnetic glow cursorLabel="Explore">
-              Start building
+              {t("footer.startBuilding")}
               <Icon name="ArrowRight" className="size-4" />
             </Button>
             <span className="inline-flex items-center gap-2 font-mono text-xs text-fog">
               <Icon name="Sparkles" className="size-4 text-lime" />
-              Powered by Spline
+              {t("footer.poweredBy")}
             </span>
           </div>
         </div>
@@ -78,26 +82,26 @@ const Footer = () => {
         {/* Brand + newsletter */}
         <div className="flex flex-col gap-6">
           <Logo size={40} />
-          <p className="max-w-sm text-sm leading-relaxed text-fog">{SITE.description}</p>
+          <p className="max-w-sm text-sm leading-relaxed text-fog">{t("footer.brandDescription")}</p>
           <div>
-            <p className="mb-3 font-mono text-xs uppercase tracking-widest text-lime">Join the newsletter</p>
+            <p className="mb-3 font-mono text-xs uppercase tracking-widest text-lime">{t("newsletter.join")}</p>
             <Newsletter compact />
           </div>
         </div>
 
         {/* Link columns */}
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-          {FOOTER_LINKS.map((col) => (
+          {columns.map((col, ci) => (
             <div key={col.title}>
               <h4 className="mb-4 font-mono text-xs uppercase tracking-widest text-fog">{col.title}</h4>
               <ul className="flex flex-col gap-2.5">
-                {col.links.map((link) => (
-                  <li key={link.label}>
+                {col.links.map((label, li) => (
+                  <li key={label}>
                     <Link
-                      to={link.path}
+                      to={FOOTER_LINK_PATHS[ci]?.[li] || "/"}
                       className="text-sm text-mist transition-colors hover:text-lime"
                     >
-                      {link.label}
+                      {label}
                     </Link>
                   </li>
                 ))}
@@ -110,7 +114,7 @@ const Footer = () => {
       {/* Bottom bar */}
       <div className="mt-14 flex flex-col items-center justify-between gap-6 border-t border-slate-line pt-8 sm:flex-row">
         <p className="font-mono text-xs text-fog">
-          © {new Date().getFullYear()} {SITE.name}. Engineered with care.
+          © {new Date().getFullYear()} {SITE.name}. {t("footer.rights")}
         </p>
         <div className="flex items-center gap-3">
           {SOCIALS.map((s) => (

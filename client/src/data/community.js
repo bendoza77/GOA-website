@@ -1,19 +1,26 @@
-export const COMMUNITY_STATS = [
-  { value: 45, suffix: "k", label: "Members" },
-  { value: 180, suffix: "+", label: "Projects / week" },
-  { value: 60, suffix: "+", label: "Countries" },
-  { value: 24, suffix: "/7", label: "Always online" },
+import { useLocalized } from "../i18n/useLocalized.js";
+
+/** Structural bases — labels/descriptions are merged from i18n by position. */
+const COMMUNITY_STATS_BASE = [
+  { value: 45, suffix: "k" },
+  { value: 180, suffix: "+" },
+  { value: 60, suffix: "+" },
+  { value: 24, suffix: "/7" },
 ];
 
-export const COMMUNITY_CHANNELS = [
-  { icon: "MessagesSquare", name: "#help", desc: "Stuck? Answers in minutes, any timezone.", accent: "green" },
-  { icon: "Code2", name: "#code-review", desc: "Ship a PR, get senior-level feedback.", accent: "lime" },
-  { icon: "Briefcase", name: "#jobs", desc: "Referrals and roles from hiring partners.", accent: "neon" },
-  { icon: "Sparkles", name: "#showcase", desc: "Celebrate what the community is building.", accent: "green" },
-  { icon: "Users", name: "#cohorts", desc: "Your crew — accountability and momentum.", accent: "lime" },
-  { icon: "Mic", name: "#events", desc: "Live workshops, AMAs and study jams.", accent: "neon" },
+const COMMUNITY_CHANNELS_BASE = [
+  { icon: "MessagesSquare", name: "#help", accent: "green" },
+  { icon: "Code2", name: "#code-review", accent: "lime" },
+  { icon: "Briefcase", name: "#jobs", accent: "neon" },
+  { icon: "Sparkles", name: "#showcase", accent: "green" },
+  { icon: "Users", name: "#cohorts", accent: "lime" },
+  { icon: "Mic", name: "#events", accent: "neon" },
 ];
 
+export const useCommunityStats = () => useLocalized(COMMUNITY_STATS_BASE, "community.stats");
+export const useCommunityChannels = () => useLocalized(COMMUNITY_CHANNELS_BASE, "community.channels");
+
+/** Partner wordmarks — proper nouns, identical across languages. */
 export const PARTNERS = [
   "Vercel", "Stripe", "Linear", "Notion", "Framer", "Shopify",
   "Datadog", "Cloudflare", "Scale", "Twilio", "Anthropic", "Duolingo",

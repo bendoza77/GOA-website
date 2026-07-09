@@ -1,97 +1,37 @@
-/** Course catalogue. Consumed by Home preview + /courses page. */
-export const COURSES = [
-  {
-    id: "frontend-architect",
-    title: "Front-End Architect",
-    level: "Intermediate",
-    duration: "16 weeks",
-    lessons: 148,
-    tag: "Most popular",
-    accent: "green",
-    icon: "LayoutTemplate",
-    blurb:
-      "Master React 19, design systems, animation and performance to build interfaces that win awards.",
-    stack: ["React", "Tailwind", "Framer Motion", "Vite"],
-    price: "$1,490",
-  },
-  {
-    id: "fullstack-engineer",
-    title: "Full-Stack Engineer",
-    level: "Beginner → Job-ready",
-    duration: "28 weeks",
-    lessons: 260,
-    tag: "Career track",
-    accent: "lime",
-    icon: "Layers",
-    blurb:
-      "Go from first line of code to deploying full products across the modern web stack.",
-    stack: ["Node", "React", "Postgres", "Edge"],
-    price: "$2,890",
-  },
-  {
-    id: "ai-engineering",
-    title: "AI Application Engineering",
-    level: "Advanced",
-    duration: "12 weeks",
-    lessons: 96,
-    tag: "New",
-    accent: "neon",
-    icon: "BrainCircuit",
-    blurb:
-      "Ship AI-native products: RAG, agents, evals and tool-use with production guardrails.",
-    stack: ["LLMs", "RAG", "Agents", "Vector DB"],
-    price: "$1,990",
-  },
-  {
-    id: "cloud-devops",
-    title: "Cloud & DevOps",
-    level: "Intermediate",
-    duration: "14 weeks",
-    lessons: 120,
-    tag: "In demand",
-    accent: "green",
-    icon: "Cloud",
-    blurb:
-      "Containers, CI/CD, observability and infrastructure-as-code the way real teams run it.",
-    stack: ["Docker", "K8s", "Terraform", "CI/CD"],
-    price: "$1,690",
-  },
-  {
-    id: "mobile-react-native",
-    title: "Mobile with React Native",
-    level: "Intermediate",
-    duration: "12 weeks",
-    lessons: 104,
-    tag: "Cross-platform",
-    accent: "lime",
-    icon: "Smartphone",
-    blurb:
-      "One codebase, native feel. Design, build and publish polished iOS + Android apps.",
-    stack: ["Expo", "React Native", "Reanimated"],
-    price: "$1,490",
-  },
-  {
-    id: "data-structures",
-    title: "DSA & Interview Prep",
-    level: "All levels",
-    duration: "8 weeks",
-    lessons: 72,
-    tag: "Get hired",
-    accent: "neon",
-    icon: "Binary",
-    blurb:
-      "The patterns, not the memorisation. Crack technical interviews with structured practice.",
-    stack: ["Algorithms", "System Design", "Mock"],
-    price: "$990",
-  },
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocalized } from "../i18n/useLocalized.js";
+
+/**
+ * Course catalogue. Structural fields (id, category key, accent, icon,
+ * lessons, stack, price) live here; the translatable copy (title, level,
+ * duration, tag, blurb) is merged from i18n by position. `category` is a
+ * language-independent key so the catalogue filter keeps working in any
+ * language.
+ */
+const COURSES_BASE = [
+  { id: "frontend-architect", category: "frontend", lessons: 148, accent: "green", icon: "LayoutTemplate", stack: ["React", "Tailwind", "Framer Motion", "Vite"], price: "$1,490" },
+  { id: "fullstack-engineer", category: "fullstack", lessons: 260, accent: "lime", icon: "Layers", stack: ["Node", "React", "Postgres", "Edge"], price: "$2,890" },
+  { id: "ai-engineering", category: "ai", lessons: 96, accent: "neon", icon: "BrainCircuit", stack: ["LLMs", "RAG", "Agents", "Vector DB"], price: "$1,990" },
+  { id: "cloud-devops", category: "cloud", lessons: 120, accent: "green", icon: "Cloud", stack: ["Docker", "K8s", "Terraform", "CI/CD"], price: "$1,690" },
+  { id: "mobile-react-native", category: "mobile", lessons: 104, accent: "lime", icon: "Smartphone", stack: ["Expo", "React Native", "Reanimated"], price: "$1,490" },
+  { id: "data-structures", category: "interview", lessons: 72, accent: "neon", icon: "Binary", stack: ["Algorithms", "System Design", "Mock"], price: "$990" },
 ];
 
-export const COURSE_CATEGORIES = [
-  "All",
-  "Front-End",
-  "Full-Stack",
-  "AI",
-  "Cloud",
-  "Mobile",
-  "Interview",
-];
+/** Category keys — labels are pulled from i18n (`courses.categories.<key>`). */
+export const COURSE_CATEGORY_KEYS = ["all", "frontend", "fullstack", "ai", "cloud", "mobile", "interview"];
+
+/** Pricing plans — only `featured` is structural. */
+const PLANS_BASE = [{}, { featured: true }, {}];
+
+export const useCourses = () => useLocalized(COURSES_BASE, "courses.items");
+
+export const useCourseCategories = () => {
+  const { t } = useTranslation();
+  return useMemo(
+    () => COURSE_CATEGORY_KEYS.map((key) => ({ key, label: t(`courses.categories.${key}`) })),
+    [t]
+  );
+};
+
+export const usePlans = () => useLocalized(PLANS_BASE, "plans");

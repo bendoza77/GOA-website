@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { NAV_LINKS, SOCIALS } from "../../constants/site.js";
 import { useNavigationContext } from "../../context/NavigationContext.jsx";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll.js";
@@ -8,6 +9,7 @@ import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
 import SocialIcon from "../ui/SocialIcon.jsx";
 import ThemeToggle from "../ui/ThemeToggle.jsx";
+import LanguageToggle from "../ui/LanguageToggle.jsx";
 import { cn } from "../../utils/cn.js";
 
 const panel = {
@@ -22,6 +24,7 @@ const item = {
 
 /** MobileMenu — full-screen animated overlay for small screens. */
 const MobileMenu = () => {
+  const { t } = useTranslation();
   const { isMenuOpen, closeMenu } = useNavigationContext();
   const { pathname } = useLocation();
   useLockBodyScroll(isMenuOpen);
@@ -61,7 +64,7 @@ const MobileMenu = () => {
                     >
                       <span className="flex items-center gap-4">
                         <span className="font-mono text-xs text-lime/60">0{i + 1}</span>
-                        <span className="font-display text-2xl font-semibold sm:text-3xl">{link.label}</span>
+                        <span className="font-display text-2xl font-semibold sm:text-3xl">{t(`nav.${link.key}`)}</span>
                       </span>
                       <Icon name="ArrowUpRight" className="size-5 -translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                     </NavLink>
@@ -73,7 +76,7 @@ const MobileMenu = () => {
 
           <motion.div variants={item} className="relative flex flex-col gap-5 px-8 pb-10">
             <Button to="/contact" size="lg" glow className="w-full" onClick={closeMenu}>
-              Apply now
+              {t("nav.apply")}
             </Button>
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -90,7 +93,10 @@ const MobileMenu = () => {
                   </a>
                 ))}
               </div>
-              <ThemeToggle />
+              <div className="flex items-center gap-2">
+                <LanguageToggle />
+                <ThemeToggle />
+              </div>
             </div>
           </motion.div>
         </motion.div>

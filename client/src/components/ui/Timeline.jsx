@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Icon from "./Icon.jsx";
 import { viewportOnce } from "../../utils/motion.js";
 
@@ -6,7 +7,9 @@ import { viewportOnce } from "../../utils/motion.js";
  * Timeline — vertical stepped journey with a growing neon spine.
  * Steps alternate sides on desktop, stack on mobile.
  */
-const Timeline = ({ steps }) => (
+const Timeline = ({ steps }) => {
+  const { t } = useTranslation();
+  return (
   <div className="relative mx-auto max-w-4xl">
     {/* Spine */}
     <div className="absolute left-6 top-0 h-full w-px bg-slate-line md:left-1/2 md:-translate-x-1/2">
@@ -45,7 +48,7 @@ const Timeline = ({ steps }) => (
                   <span className="grid size-10 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
                     <Icon name={step.icon} className="size-5" />
                   </span>
-                  <span className="font-mono text-xs tracking-[0.3em] text-fog">STEP {step.step}</span>
+                  <span className="font-mono text-xs uppercase tracking-[0.3em] text-fog">{t("common.step")} {step.step}</span>
                 </div>
                 <h3 className="h3 mb-1.5 text-snow">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-fog">{step.desc}</p>
@@ -57,6 +60,7 @@ const Timeline = ({ steps }) => (
       })}
     </div>
   </div>
-);
+  );
+};
 
 export default Timeline;

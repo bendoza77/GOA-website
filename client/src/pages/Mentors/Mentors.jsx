@@ -1,22 +1,26 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../../components/sections/PageHeader.jsx";
 import Section from "../../components/layout/Section.jsx";
 import MentorCard from "../../components/cards/MentorCard.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
 import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
-import { MENTORS } from "../../data/mentors.js";
+import { useMentors } from "../../data/mentors.js";
 import { staggerContainer, tiltIn } from "../../utils/motion.js";
 
 /** Mentors — full roster grid. */
-const Mentors = () => (
+const Mentors = () => {
+  const { t } = useTranslation();
+  const mentors = useMentors();
+  return (
   <>
     {/* Page ambience — the mentor constellation network */}
     <AmbientScene scene="mentors" />
     <PageHeader
-      eyebrow="The people"
-      title="Mentors who have"
-      highlight="shipped it"
-      description="Working engineers and designers from the teams you admire — here to unblock you, review your code, and push your craft."
+      eyebrow={t("mentorsPage.header.eyebrow")}
+      title={t("mentorsPage.header.title")}
+      highlight={t("mentorsPage.header.highlight")}
+      description={t("mentorsPage.header.description")}
     />
 
     <Section className="!pt-4">
@@ -26,7 +30,7 @@ const Mentors = () => (
         animate="show"
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {MENTORS.map((m) => (
+        {mentors.map((m) => (
           <motion.div key={m.id} variants={tiltIn}>
             <MentorCard mentor={m} />
           </motion.div>
@@ -34,14 +38,9 @@ const Mentors = () => (
       </motion.div>
     </Section>
 
-    <CTASection
-      eyebrow="Become a mentor"
-      title="Shipped something you're proud of? Pay it forward."
-      description="Join our mentor network, sharpen your leadership, and help engineer the next generation of builders."
-      primary={{ label: "Apply to mentor", to: "/contact" }}
-      secondary={{ label: "See the community", to: "/community" }}
-    />
+    <CTASection variant="mentors" />
   </>
-);
+  );
+};
 
 export default Mentors;

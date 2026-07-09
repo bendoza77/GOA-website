@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Button from "../../components/ui/Button.jsx";
 import Icon from "../../components/ui/Icon.jsx";
 import ParticleField from "../../components/backgrounds/ParticleField.jsx";
 import AnimatedGrid from "../../components/backgrounds/AnimatedGrid.jsx";
 
 /** NotFound — playful, on-brand 404 with a glitchy pixel wordmark. */
-const NotFound = () => (
+const NotFound = () => {
+  const { t } = useTranslation();
+  return (
   <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6">
     <AnimatedGrid perspective />
     <ParticleField className="opacity-60" />
@@ -31,23 +34,24 @@ const NotFound = () => (
         transition={{ delay: 0.2, duration: 0.6 }}
         className="-mt-4 flex flex-col items-center gap-6"
       >
-        <p className="font-mono text-sm uppercase tracking-[0.3em] text-lime">Signal lost</p>
-        <h2 className="h2 max-w-lg text-balance">This route never compiled</h2>
+        <p className="font-mono text-sm uppercase tracking-[0.3em] text-lime">{t("notFound.signalLost")}</p>
+        <h2 className="h2 max-w-lg text-balance">{t("notFound.title")}</h2>
         <p className="lead max-w-md">
-          The page you're after moved, shipped, or never existed. Let's get you back to solid ground.
+          {t("notFound.description")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Button to="/" size="lg" magnetic glow cursorLabel="Home">
             <Icon name="ArrowLeft" className="size-4" />
-            Back home
+            {t("notFound.backHome")}
           </Button>
           <Button to="/courses" size="lg" variant="secondary">
-            Browse courses
+            {t("notFound.browseCourses")}
           </Button>
         </div>
       </motion.div>
     </div>
   </section>
-);
+  );
+};
 
 export default NotFound;

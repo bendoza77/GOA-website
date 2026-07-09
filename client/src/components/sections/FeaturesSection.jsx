@@ -1,17 +1,21 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import Section from "../layout/Section.jsx";
 import SectionTitle from "../ui/SectionTitle.jsx";
 import FeatureCard from "../cards/FeatureCard.jsx";
-import { FEATURES } from "../../data/features.js";
+import { useFeatures } from "../../data/features.js";
 import { staggerContainer, fadeUp, viewportOnce } from "../../utils/motion.js";
 
 /** FeaturesSection — the "Why GOA" grid of value props. */
-const FeaturesSection = () => (
+const FeaturesSection = () => {
+  const { t } = useTranslation();
+  const features = useFeatures();
+  return (
   <Section id="features">
     <SectionTitle
-      eyebrow="Why GOA"
-      title="A learning system built for real outcomes"
-      description="Everything is engineered around one goal: turning your effort into a career you're proud of."
+      eyebrow={t("features.eyebrow")}
+      title={t("features.title")}
+      description={t("features.description")}
     />
 
     <motion.div
@@ -21,13 +25,14 @@ const FeaturesSection = () => (
       viewport={viewportOnce}
       className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {FEATURES.map((f) => (
+      {features.map((f) => (
         <motion.div key={f.title} variants={fadeUp}>
           <FeatureCard {...f} />
         </motion.div>
       ))}
     </motion.div>
   </Section>
-);
+  );
+};
 
 export default FeaturesSection;

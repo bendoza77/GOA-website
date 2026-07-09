@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../../components/sections/PageHeader.jsx";
 import Section from "../../components/layout/Section.jsx";
 import GlassPanel from "../../components/ui/GlassPanel.jsx";
@@ -6,28 +7,30 @@ import Icon from "../../components/ui/Icon.jsx";
 import SocialIcon from "../../components/ui/SocialIcon.jsx";
 import ContactForm from "../../components/forms/ContactForm.jsx";
 import { SITE, SOCIALS } from "../../constants/site.js";
-import { FAQS } from "../../data/faq.js";
+import { useFaqs } from "../../data/faq.js";
 import Accordion from "../../components/ui/Accordion.jsx";
 import Reveal from "../../components/ui/Reveal.jsx";
 import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import { staggerContainer, slideInLeft, slideInRight } from "../../utils/motion.js";
 
-const CONTACT_METHODS = [
-  { icon: "Mail", label: "Email us", value: SITE.email, href: `mailto:${SITE.email}` },
-  { icon: "Phone", label: "Call us", value: SITE.phone, href: `tel:${SITE.phone}` },
-  { icon: "MapPin", label: "Find us", value: SITE.location },
-];
-
 /** Contact — enquiry form, direct channels and a compact FAQ. */
-const Contact = () => (
+const Contact = () => {
+  const { t } = useTranslation();
+  const faqs = useFaqs();
+  const contactMethods = [
+    { icon: "Mail", label: t("contact.methods.email"), value: SITE.email, href: `mailto:${SITE.email}` },
+    { icon: "Phone", label: t("contact.methods.call"), value: SITE.phone, href: `tel:${SITE.phone}` },
+    { icon: "MapPin", label: t("contact.methods.find"), value: t("contact.methods.location") },
+  ];
+  return (
   <>
     {/* Page ambience — the broadcasting signal core + satellite */}
     <AmbientScene scene="contact" />
     <PageHeader
-      eyebrow="Say hello"
-      title="Let's talk about your"
-      highlight="next move"
-      description="Questions about a track, scholarships, hiring partnerships or mentoring? We usually reply within one business day."
+      eyebrow={t("contact.header.eyebrow")}
+      title={t("contact.header.title")}
+      highlight={t("contact.header.highlight")}
+      description={t("contact.header.description")}
     />
 
     <Section className="!pt-4">
@@ -39,7 +42,7 @@ const Contact = () => (
           animate="show"
           className="flex flex-col gap-4"
         >
-          {CONTACT_METHODS.map((m) => (
+          {contactMethods.map((m) => (
             <motion.div key={m.label} variants={slideInLeft}>
               <GlassPanel hover tilt as={m.href ? "a" : "div"} {...(m.href ? { href: m.href } : {})} className="flex items-center gap-4 p-6">
                 <span className="grid size-12 shrink-0 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
@@ -55,7 +58,7 @@ const Contact = () => (
 
           <motion.div variants={slideInLeft}>
             <GlassPanel className="p-6">
-              <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fog">Follow along</p>
+              <p className="mb-4 font-mono text-xs uppercase tracking-widest text-fog">{t("contact.followAlong")}</p>
               <div className="flex flex-wrap gap-3">
                 {SOCIALS.map((s) => (
                   <a
@@ -83,11 +86,12 @@ const Contact = () => (
 
     <Section>
       <div className="mx-auto max-w-3xl">
-        <h2 className="h2 mb-8 text-center text-balance">Quick answers</h2>
-        <Accordion items={FAQS.slice(0, 4)} />
+        <h2 className="h2 mb-8 text-center text-balance">{t("faq.quickAnswers")}</h2>
+        <Accordion items={faqs.slice(0, 4)} />
       </div>
     </Section>
   </>
-);
+  );
+};
 
 export default Contact;

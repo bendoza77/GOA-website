@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../../components/sections/PageHeader.jsx";
 import Section from "../../components/layout/Section.jsx";
 import SectionTitle from "../../components/ui/SectionTitle.jsx";
@@ -10,7 +11,7 @@ import FloatingObjects from "../../components/3d/FloatingObjects.jsx";
 import AmbientScene from "../../components/3d/ambient/AmbientScene.jsx";
 import ImpactStats from "../../components/sections/ImpactStats.jsx";
 import CTASection from "../../components/sections/CTASection.jsx";
-import { VALUES, JOURNEY } from "../../data/journey.js";
+import { useValues, useJourney } from "../../data/journey.js";
 import {
   staggerContainer,
   depthIn,
@@ -20,36 +21,35 @@ import {
 } from "../../utils/motion.js";
 
 /** About — mission, values, journey and impact. */
-const About = () => (
+const About = () => {
+  const { t } = useTranslation();
+  const values = useValues();
+  const journey = useJourney();
+  const missionPoints = t("about.mission.points", { returnObjects: true });
+  return (
   <>
     {/* Page ambience — holographic globe drifting behind the story */}
     <AmbientScene scene="about" />
     <PageHeader
-      eyebrow="Our story"
-      title="We exist to turn ambition into"
-      highlight="shipped software"
-      description="Goal-Oriented Academy is a modern programming school built on one belief: you learn to build by building — mentored, in the open, with real outcomes."
+      eyebrow={t("about.header.eyebrow")}
+      title={t("about.header.title")}
+      highlight={t("about.header.highlight")}
+      description={t("about.header.description")}
     />
 
     {/* Mission split */}
     <Section className="!pt-6">
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal variants={slideInLeft}>
-          <span className="eyebrow">Mission</span>
+          <span className="eyebrow">{t("about.mission.eyebrow")}</span>
           <h2 className="h2 mt-4 text-balance">
-            A different kind of academy — obsessed with what you can build
+            {t("about.mission.title")}
           </h2>
           <p className="lead mt-5">
-            Most learning stops at tutorials. We start where they end. Every week you
-            ship a real project, get it reviewed like a professional pull request, and
-            grow inside a community of people chasing the same goal.
+            {t("about.mission.lead")}
           </p>
           <ul className="mt-6 flex flex-col gap-3">
-            {[
-              "Project-first, not lecture-first",
-              "Senior mentorship on your actual code",
-              "A network that lasts long after you graduate",
-            ].map((point) => (
+            {missionPoints.map((point) => (
               <li key={point} className="flex items-center gap-3 text-mist">
                 <Icon name="CheckCircle2" className="size-5 shrink-0 text-lime" />
                 {point}
@@ -69,8 +69,8 @@ const About = () => (
     {/* Values */}
     <Section>
       <SectionTitle
-        eyebrow="What we value"
-        title="Principles that shape everything we build"
+        eyebrow={t("about.values.eyebrow")}
+        title={t("about.values.title")}
       />
       <motion.div
         variants={staggerContainer(0.08)}
@@ -79,7 +79,7 @@ const About = () => (
         viewport={viewportOnce}
         className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {VALUES.map((v) => (
+        {values.map((v) => (
           <motion.div key={v.title} variants={depthIn}>
             <GlassPanel hover tilt className="h-full p-7">
               <div className="mb-5 grid size-12 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
@@ -96,18 +96,19 @@ const About = () => (
     {/* Journey */}
     <Section>
       <SectionTitle
-        eyebrow="How it works"
-        title="The GOA journey, end to end"
-        description="A guided path from your first commit to a signed offer — you always know the next move."
+        eyebrow={t("about.journey.eyebrow")}
+        title={t("about.journey.title")}
+        description={t("about.journey.description")}
       />
       <div className="mt-16">
-        <Timeline steps={JOURNEY} />
+        <Timeline steps={journey} />
       </div>
     </Section>
 
     <ImpactStats />
     <CTASection />
   </>
-);
+  );
+};
 
 export default About;

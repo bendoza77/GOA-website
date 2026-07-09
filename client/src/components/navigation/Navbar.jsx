@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { NAV_LINKS } from "../../constants/site.js";
 import { useScrolled } from "../../hooks/useScroll.js";
 import { prefetchRoute } from "../../routes/AppRoutes.jsx";
@@ -11,6 +12,7 @@ import Logo from "../ui/Logo.jsx";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
 import ThemeToggle from "../ui/ThemeToggle.jsx";
+import LanguageToggle from "../ui/LanguageToggle.jsx";
 import MobileMenu from "./MobileMenu.jsx";
 
 /**
@@ -23,6 +25,7 @@ import MobileMenu from "./MobileMenu.jsx";
  */
 const Navbar = () => {
   const scrolled = useScrolled(20);
+  const { t } = useTranslation();
   const { isMenuOpen, toggleMenu } = useNavigationContext();
   const { animationsOn } = useAnimationContext();
   const { pathname } = useLocation();
@@ -72,7 +75,7 @@ const Navbar = () => {
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
-                    <span className="relative z-10">{link.label}</span>
+                    <span className="relative z-10">{t(`nav.${link.key}`)}</span>
                   </NavLink>
                 </li>
               );
@@ -80,14 +83,15 @@ const Navbar = () => {
           </ul>
 
           <div className="flex items-center gap-2">
+            <LanguageToggle />
             <ThemeToggle />
             <Button to="/contact" size="sm" magnetic glow cursorLabel="Apply" className="hidden sm:inline-flex">
-              Apply now
+              {t("nav.apply")}
             </Button>
             {/* Mobile toggle */}
             <button
               onClick={toggleMenu}
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-label={isMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
               aria-expanded={isMenuOpen}
               className="grid size-10 place-items-center rounded-full border hairline surface-2 text-snow transition-colors hover:border-lime/40 lg:hidden"
             >

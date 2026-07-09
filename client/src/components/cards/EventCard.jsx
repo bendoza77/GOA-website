@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import GlassPanel from "../ui/GlassPanel.jsx";
 import Badge from "../ui/Badge.jsx";
 import Icon from "../ui/Icon.jsx";
@@ -7,14 +8,14 @@ import { cn } from "../../utils/cn.js";
 
 /** EventCard — upcoming event with date block, mode + speaker. */
 const EventCard = ({ event }) => {
+  const { t } = useTranslation();
   const a = accent(event.accent);
-  const [month, day] = event.date.split(" ");
   return (
     <GlassPanel hover tilt className="group flex h-full flex-col p-6 sm:flex-row sm:gap-6">
       {/* Date block */}
       <div className={cn("mb-4 flex shrink-0 flex-col items-center justify-center rounded-xl border p-4 sm:mb-0 sm:w-24", a.border, a.bg)}>
-        <span className={cn("font-mono text-xs uppercase tracking-widest", a.text)}>{month}</span>
-        <span className="font-display text-3xl font-bold text-snow">{day?.replace(",", "")}</span>
+        <span className={cn("font-mono text-xs uppercase tracking-widest", a.text)}>{event.month}</span>
+        <span className="font-display text-3xl font-bold text-snow">{event.day}</span>
       </div>
 
       <div className="flex flex-1 flex-col">
@@ -28,7 +29,7 @@ const EventCard = ({ event }) => {
           <span className="inline-flex items-center gap-2 font-mono text-xs text-mist">
             <Icon name="Clock" className="size-3.5 text-lime" /> {event.time} · {event.speaker}
           </span>
-          <Button size="sm" variant="neon" cursorLabel="RSVP">Reserve</Button>
+          <Button size="sm" variant="neon" cursorLabel="RSVP">{t("common.reserve")}</Button>
         </div>
       </div>
     </GlassPanel>

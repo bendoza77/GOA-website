@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import GlassPanel from "../ui/GlassPanel.jsx";
 import Icon from "../ui/Icon.jsx";
 import Badge from "../ui/Badge.jsx";
@@ -7,6 +8,7 @@ import { cn } from "../../utils/cn.js";
 
 /** CourseCard — catalogue tile with stack chips, meta + CTA. */
 const CourseCard = ({ course }) => {
+  const { t } = useTranslation();
   const a = accent(course.accent);
   return (
     <GlassPanel hover tilt className={cn("group flex h-full flex-col p-6", a.glow)}>
@@ -39,13 +41,13 @@ const CourseCard = ({ course }) => {
 
       <div className="mb-5 flex items-center gap-4 font-mono text-xs text-fog">
         <span className="inline-flex items-center gap-1.5"><Icon name="Clock" className="size-3.5" /> {course.duration}</span>
-        <span className="inline-flex items-center gap-1.5"><Icon name="BookOpen" className="size-3.5" /> {course.lessons} lessons</span>
+        <span className="inline-flex items-center gap-1.5"><Icon name="BookOpen" className="size-3.5" /> {course.lessons} {t("common.lessons")}</span>
       </div>
 
       <div className="flex items-center justify-between border-t border-slate-line pt-4">
         <div>
           <span className="font-display text-xl font-bold text-snow">{course.price}</span>
-          <span className="ml-1 text-xs text-fog">/ track</span>
+          <span className="ml-1 text-xs text-fog">{t("common.perTrack")}</span>
         </div>
         <Link
           to="/courses"
@@ -54,7 +56,7 @@ const CourseCard = ({ course }) => {
             a.text
           )}
         >
-          Explore
+          {t("common.explore")}
           <Icon name="ArrowRight" className="size-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
