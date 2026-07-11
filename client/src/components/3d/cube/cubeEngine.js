@@ -437,6 +437,13 @@ export class CubeEngine {
     const travel = smootherstep(win(p, TRAVEL));
     const centreScale = this._centreScale();
 
+    // "settled" = the cube has finished its entrance and is now resting/docked
+    // in the hero. While settled it must track the slot RIGIDLY: the damped
+    // follow below is what makes a docked cube rubber-band (lag then spring
+    // back) as the page scrolls, which reads as an unwanted bounce. The
+    // entrance flight itself (travel < 0.92) keeps its weighty damping.
+    const settled = this.docked ? 1 : smootherstep(win(p, [0.92, 1.0]));
+
     // centre target (screen middle), plus the fall offset from above the frame
     this._centreTarget(this._tPos);
     const fall = smootherstep(1 - win(p, FALL)); // 1 → 0 as it lands
@@ -462,25 +469,32 @@ export class CubeEngine {
     this._tPos.lerp(this._anchor, travel);
     this._tScale = MathUtils.lerp(centreScale, dockScale, travel);
 
-    // damped follow (inertia / weight) — heavier constants so the cube eases
-    // into place with momentum instead of snapping
-    this._pos.lerp(this._tPos, 1 - Math.exp(-6 * dt));
-    this._scale = MathUtils.damp(this._scale, this._tScale, 6, dt);
+    // Damped follow (inertia / weight) during the entrance, blending to a
+    // rigid 1:1 lock once settled so the docked cube scrolls WITH the slot
+    // instead of bouncing/lagging behind it.
+    const posLerp = 1 - Math.exp(-6 * dt);
+    const posFollow = posLerp + (1 - posLerp) * settled; // → 1 when settled
+    this._pos.lerp(this._tPos, posFollow);
+    this._scale = MathUtils.lerp(this._scale, this._tScale, posFollow);
 
     this.cubeGroup.position.copy(this._pos);
     this.cubeGroup.scale.setScalar(this._scale);
 
     /* -------- orientation -------- */
     this._orientationFor(p, this._tq);
-    // subtle idle life: gentle wobble, strongest at rest, muted mid-reveal
-    const idle = 0.03 + travel * 0.02;
-    this._wobble.setFromAxisAngle(this._wAxis, Math.sin(time * 0.6) * idle);
-    this._tq.multiply(this._wobble);
-    this._wobble.setFromAxisAngle(new Vector3(1, 0, 0), Math.cos(time * 0.5) * idle * 0.6);
-    this._tq.multiply(this._wobble);
-    // heavy, smooth rotational follow — the turn eases rather than snapping,
-    // but converges quickly enough to actually reach the top/bottom poses
-    this._q.slerp(this._tq, 1 - Math.exp(-5 * dt));
+    // Subtle idle life during the reveal, faded fully OUT once settled — a
+    // resting cube must sit dead-still, or the constant sway reads as a bounce
+    // while the user scrolls.
+    const idle = 0.03 * (1 - settled);
+    if (idle > 0.0001) {
+      this._wobble.setFromAxisAngle(this._wAxis, Math.sin(time * 0.6) * idle);
+      this._tq.multiply(this._wobble);
+      this._wobble.setFromAxisAngle(new Vector3(1, 0, 0), Math.cos(time * 0.5) * idle * 0.6);
+      this._tq.multiply(this._wobble);
+    }
+    // Heavy, smooth rotational follow during the turn; rigid once settled.
+    const qLerp = 1 - Math.exp(-5 * dt);
+    this._q.slerp(this._tq, qLerp + (1 - qLerp) * settled);
     this.cubeGroup.quaternion.copy(this._q);
 
     // Docked mode: hard-snap to the resting pose on the very first frame so the
