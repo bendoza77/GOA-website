@@ -1,10 +1,8 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { useAnimationContext } from "../../context/AnimationContext.jsx";
 import { useHeroStats } from "../../data/stats.js";
 import { staggerContainer, fadeUp } from "../../utils/motion.js";
-import { cn } from "../../utils/cn.js";
 import Badge from "../ui/Badge.jsx";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
@@ -19,7 +17,6 @@ import AnimatedCounter from "../ui/AnimatedCounter.jsx";
  */
 const Hero = () => {
   const { t } = useTranslation();
-  const { animationsOn } = useAnimationContext();
   const heroStats = useHeroStats();
 
   /* Scroll-out parallax — as the user scrolls onward, the copy drifts up and
@@ -38,16 +35,14 @@ const Hero = () => {
     className="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16 sm:pt-32"
   >
     <div className="container-goa relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-      {/* Left — copy, rising step-by-step as it scrolls into view. On mobile
-          it sits BELOW the cube slot (order-2); on desktop it's the left
-          column (order-1). */}
+      {/* Left — copy, rising step-by-step as it scrolls into view */}
       <motion.div
         variants={staggerContainer(0.12)}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.35 }}
         style={{ y: copyY, opacity: heroOpacity }}
-        className="order-2 flex flex-col items-start gap-6 lg:order-1"
+        className="flex flex-col items-start gap-6"
       >
         <motion.div variants={fadeUp}>
           <Badge dot pixel tone="neon">
@@ -92,24 +87,12 @@ const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Cube dock. The hero cube act (CubeStage) flies in and pixel-locks to
-          this slot, becoming part of the hero. Kept empty on purpose; id is the
-          dock target the CubeEngine tracks. Now present on EVERY breakpoint so
-          the cube has somewhere to land on phones/tablets too (previously
-          `lg`-only, which left the cube nowhere to dock and it vanished on
-          scroll). On mobile it's a centred visual ABOVE the copy (order-1);
-          on desktop the reserved right column. Only reserved when animations
-          are on — with reduced motion there's no cube, so no empty gap. */}
-      <div
-        id="hero-cube-slot"
-        aria-hidden="true"
-        className={cn(
-          "order-1 w-full lg:order-2 lg:min-h-[420px] lg:block",
-          animationsOn
-            ? "block h-[40vh] min-h-[240px] lg:h-auto"
-            : "hidden"
-        )}
-      />
+      {/* Right — open stage / cube dock. The hero cube act (CubeStage) flies
+          in and pixel-locks to this slot, becoming part of the hero. Kept
+          empty on purpose; id is the dock target the CubeEngine tracks.
+          Desktop-only: the cube act is cancelled on phones/tablets, so the
+          slot is reserved only at `lg` and up. */}
+      <div id="hero-cube-slot" aria-hidden="true" className="hidden min-h-[420px] lg:block" />
     </div>
   </section>
   );

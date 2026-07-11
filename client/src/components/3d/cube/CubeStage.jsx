@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAnimationContext } from "../../../context/AnimationContext.jsx";
+import { useIsDesktop } from "../../../hooks/useIsDesktop.js";
 
 /* Community photos for the six cube faces — bundled from src/assets/images at
    build time (glob keeps us decoupled from the exact filenames and sorts them
@@ -28,12 +29,15 @@ const FACE_IMAGES = Object.entries(
  */
 const CubeStage = ({ dockId = "hero-cube-slot", docked = false }) => {
   const { animationsOn } = useAnimationContext();
+  // Cube is a desktop-only act — cancelled on phones and tablets (no dock slot
+  // exists there, and the sequence is heavy for touch devices).
+  const isDesktop = useIsDesktop();
   const canvasRef = useRef(null);
   const runwayRef = useRef(null);
   const captionRef = useRef(null);
 
   useEffect(() => {
-    if (!animationsOn) return;
+    if (!animationsOn || !isDesktop) return;
     let engine = null;
     let disposed = false;
     let idleId;
@@ -92,9 +96,9 @@ const CubeStage = ({ dockId = "hero-cube-slot", docked = false }) => {
       themeObserver.disconnect();
       engine?.dispose();
     };
-  }, [animationsOn, dockId, docked]);
+  }, [animationsOn, isDesktop, dockId, docked]);
 
-  if (!animationsOn) return null;
+  if (!animationsOn || !isDesktop) return null;
 
   return (
     <>
