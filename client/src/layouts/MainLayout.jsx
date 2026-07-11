@@ -1,8 +1,10 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAnimationContext } from "../context/AnimationContext.jsx";
 import { useRideComplete } from "../hooks/useRideComplete.js";
+import { useRideSeen } from "../hooks/useRideSeen.js";
+import { markRideSeen } from "../utils/rideGate.js";
 import PageLoader from "../components/loaders/PageLoader.jsx";
 import Navbar from "../components/navigation/Navbar.jsx";
 import Footer from "../components/layout/Footer.jsx";
@@ -24,13 +26,21 @@ const MainLayout = () => {
   const outlet = useOutlet();
   const { animationsOn } = useAnimationContext();
   const rideDone = useRideComplete();
+  const rideSeen = useRideSeen();
   useDocumentMeta();
 
+  /* Once the visitor scrolls past the opening, remember it for the session so
+     a later return to Home skips the ride (see rideGate / Home). */
+  useEffect(() => {
+    if (rideDone) markRideSeen();
+  }, [rideDone]);
+
   /* During Home's 3D ride: no chrome. Full chrome returns once the ride is
-     over — and is always there when animations are off, because Home then
-     renders its classic content page. */
+     over — and is always there when animations are off, or on a return visit
+     within the session (rideSeen), because Home then renders its content page
+     straight away rather than replaying the ride. */
   const cinematicHome =
-    animationsOn && location.pathname === "/" && !rideDone;
+    animationsOn && location.pathname === "/" && !rideSeen && !rideDone;
 
   return (
     <div className="relative flex min-h-screen flex-col">

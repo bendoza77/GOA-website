@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { wasRideSeen } from "../../utils/rideGate.js";
 import ScrollJourney from "../../components/3d/scroll/ScrollJourney.jsx";
 import CubeStage from "../../components/3d/cube/CubeStage.jsx";
 import DepthDust from "../../components/backgrounds/DepthDust.jsx";
@@ -29,16 +31,27 @@ import RobotShowcase from "../../components/sections/RobotShowcase.jsx";
  *
  * With animations off, the 3D pieces remove themselves (each self-gates on
  * AnimationContext) and Home is simply the classic content page.
+ *
+ * Return visits within the session skip the ride entirely (rideGate): the
+ * intro runways are dropped and the cube renders already docked in the hero,
+ * so navigating away and back lands straight on the content instead of making
+ * the visitor scroll the whole opening again.
  */
-const Home = () => (
+const Home = () => {
+  // Captured once at mount so the runways can't unmount mid-ride when the
+  // flag flips to seen — the branch is fixed for this visit.
+  const [replay] = useState(wasRideSeen);
+
+  return (
   <>
-    <ScrollJourney />
+    {!replay && <ScrollJourney />}
     <DepthDust />
-    <CinematicIntro />
+    {!replay && <CinematicIntro />}
     {/* Act two: the hero cube falls in, reveals every side, then flies into
-        the Hero's reserved right-hand slot and docks (CubeStage owns its own
-        scroll runway, so it slots cleanly between the ride and the hero). */}
-    <CubeStage />
+        the Hero's reserved slot and docks (CubeStage owns its own scroll
+        runway, so it slots cleanly between the ride and the hero). On a return
+        visit it skips straight to the docked pose. */}
+    <CubeStage docked={replay} />
     <Hero />
     {/* Cinematic act: fullscreen video that morphs into a physical TV. */}
     <VideoSection />
@@ -54,6 +67,7 @@ const Home = () => (
     {/* Interactive 3D finale — the draggable robot, at the very bottom of Home */}
     <RobotShowcase />
   </>
-);
+  );
+};
 
 export default Home;

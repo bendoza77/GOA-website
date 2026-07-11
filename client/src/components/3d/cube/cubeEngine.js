@@ -73,6 +73,7 @@ export class CubeEngine {
     const {
       isDark = true,
       coarse = false,
+      docked = false,
       runwayEl = null,
       dockEl = null,
       onCaption = null,
@@ -81,6 +82,9 @@ export class CubeEngine {
     } = opts;
 
     this.canvas = canvas;
+    // Docked mode (return visits): no runway, the cube sits at the end-state
+    // pose in the hero slot from the first frame instead of playing the ride.
+    this.docked = docked;
     this.runwayEl = runwayEl;
     this.dockEl = dockEl;
     this.onCaption = onCaption;
@@ -89,10 +93,13 @@ export class CubeEngine {
     this.coarse = coarse;
     this.disposed = false;
     this._active = false;
+    this._seeded = false;
 
     this.time = 0;
     this.lastT = 0;
-    this.progress = 0;
+    // Start already at the dock end of the timeline when docked, so no scroll
+    // is needed to bring the cube into the hero.
+    this.progress = docked ? 1 : 0;
     this._lastCaption = -1;
     this._fpsFrames = 0;
     this._fpsStart = 0;
@@ -270,6 +277,13 @@ export class CubeEngine {
      lands exactly when the Hero has settled at the top of the viewport and its
      right-hand slot is at its natural resting position — the dock moment. */
   _readProgress() {
+    // Docked: pinned at the end of the timeline; on screen whenever the hero
+    // slot it lives in is in view (it scrolls away cleanly with the hero).
+    if (this.docked) {
+      const d = this.dockEl?.getBoundingClientRect();
+      const onScreen = !!d && d.top < window.innerHeight && d.bottom > 0;
+      return { p: 1, onScreen };
+    }
     if (!this.runwayEl) return { p: 0, onScreen: false };
     const r = this.runwayEl.getBoundingClientRect();
     const p = MathUtils.clamp(-r.top / Math.max(r.height, 1), 0, 1);
@@ -313,15 +327,25 @@ export class CubeEngine {
       return this._centreScale() * 0.42;
     }
     this._screenToWorld(d.left + d.width / 2, d.top + d.height / 2, out);
-    // fit ~62% of the slot width
-    return Math.max(d.width * 0.62 * this._wpp, 0.4);
+    // Fit inside the slot box: ~62% of its width, but never taller than ~90% of
+    // its height (mobile slots are wide-but-short, so the height cap stops the
+    // docked cube spilling up into the caption or down into the copy).
+    return Math.max(Math.min(d.width * 0.62, d.height * 0.9) * this._wpp, 0.4);
   }
 
   _centreScale() {
-    // ~42% of viewport height. The hero title above it is kept clear by its
-    // own higher/smaller placement (see CubeStage), so the cube keeps full
-    // presence without rising into the text as it tilts toward its top face.
-    return 0.42 * 2 * CAM_DIST * Math.tan(MathUtils.degToRad(FOV) / 2);
+    // Base presence: ~42% of viewport height. The hero title above it is kept
+    // clear by its own higher/smaller placement (see CubeStage), so the cube
+    // keeps full presence without rising into the text as it tilts toward its
+    // top face.
+    const byHeight = 0.42 * window.innerHeight * this._wpp;
+    // On narrow screens (phones, portrait tablets) that height-based size would
+    // spill past the side edges as the cube spins — its projected width reaches
+    // ~√2× mid-turn — and the cube reads as "cut off / disappearing". So also
+    // cap it to a fraction of viewport WIDTH; the smaller of the two wins,
+    // keeping the whole cube in frame through every rotation at any aspect.
+    const byWidth = (0.72 * window.innerWidth * this._wpp) / Math.SQRT2;
+    return Math.min(byHeight, byWidth);
   }
 
   /* Target orientation for the current progress. Reveal choreography (rp is
@@ -424,7 +448,15 @@ export class CubeEngine {
     // which by then has arrived at that same spot — and stays glued to it,
     // scrolling with the page like an embedded element.
     const dockScale = this._dockTarget(this._v); // live hero-slot world + size
-    this._screenToWorld(window.innerWidth * 0.72, window.innerHeight * 0.46, this._anchor);
+    // Hold at a fixed screen height, but horizontally aligned with the slot the
+    // cube is heading for, so the hand-off has no sideways jump — critical on
+    // mobile/tablet where the slot sits centred rather than off to the right.
+    const dRect = this.dockEl?.getBoundingClientRect();
+    const anchorX =
+      dRect && (dRect.width || dRect.height)
+        ? dRect.left + dRect.width / 2
+        : window.innerWidth * 0.72;
+    this._screenToWorld(anchorX, window.innerHeight * 0.46, this._anchor);
     const handoff = smootherstep(win(p, [0.88, 1.0]));
     this._anchor.lerp(this._v, handoff); // fixed anchor → live slot
     this._tPos.lerp(this._anchor, travel);
@@ -450,6 +482,20 @@ export class CubeEngine {
     // but converges quickly enough to actually reach the top/bottom poses
     this._q.slerp(this._tq, 1 - Math.exp(-5 * dt));
     this.cubeGroup.quaternion.copy(this._q);
+
+    // Docked mode: hard-snap to the resting pose on the very first frame so the
+    // cube appears already placed in the hero (no grow-in from the fall start
+    // pose). Afterwards it's already at target, so the damped follow above just
+    // tracks the slot as the hero scrolls.
+    if (this.docked && !this._seeded) {
+      this._pos.copy(this._tPos);
+      this._scale = this._tScale;
+      this._q.copy(this._tq);
+      this.cubeGroup.position.copy(this._pos);
+      this.cubeGroup.scale.setScalar(this._scale);
+      this.cubeGroup.quaternion.copy(this._q);
+      this._seeded = true;
+    }
 
     /* -------- contact shadow + edge glow -------- */
     const grounded = win(p, [0.14, 0.22]) * (1 - travel);

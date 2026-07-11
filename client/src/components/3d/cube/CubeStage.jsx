@@ -26,7 +26,7 @@ const FACE_IMAGES = Object.entries(
  * (id="hero-cube-slot"). Self-gates on AnimationContext, follows the
  * data-theme attribute, and disposes every GPU resource on unmount.
  */
-const CubeStage = ({ dockId = "hero-cube-slot" }) => {
+const CubeStage = ({ dockId = "hero-cube-slot", docked = false }) => {
   const { animationsOn } = useAnimationContext();
   const canvasRef = useRef(null);
   const runwayRef = useRef(null);
@@ -40,10 +40,13 @@ const CubeStage = ({ dockId = "hero-cube-slot" }) => {
 
     const boot = async () => {
       const { CubeEngine } = await import("./cubeEngine.js");
-      if (disposed || !canvasRef.current || !runwayRef.current) return;
+      // Docked mode has no runway of its own; only the ride needs one.
+      if (disposed || !canvasRef.current || (!docked && !runwayRef.current))
+        return;
       engine = new CubeEngine(canvasRef.current, {
         isDark: document.documentElement.dataset.theme !== "light",
         coarse: window.matchMedia("(pointer: coarse)").matches,
+        docked,
         runwayEl: runwayRef.current,
         dockEl: document.getElementById(dockId),
         images: FACE_IMAGES,
@@ -89,15 +92,19 @@ const CubeStage = ({ dockId = "hero-cube-slot" }) => {
       themeObserver.disconnect();
       engine?.dispose();
     };
-  }, [animationsOn, dockId]);
+  }, [animationsOn, dockId, docked]);
 
   if (!animationsOn) return null;
 
   return (
     <>
       {/* Scroll runway — pure height, gives the cube act its timeline. Sits
-          between the journey ride and the Hero; the cube docks as this ends. */}
-      <section ref={runwayRef} aria-hidden="true" className="relative h-[300vh]" />
+          between the journey ride and the Hero; the cube docks as this ends.
+          Skipped in docked mode (return visits), where the cube is placed in
+          the hero from the first frame with no runway to scroll through. */}
+      {!docked && (
+        <section ref={runwayRef} aria-hidden="true" className="relative h-[300vh]" />
+      )}
 
       {/* Fixed WebGL stage — above the journey backdrop, below the navbar. */}
       <canvas

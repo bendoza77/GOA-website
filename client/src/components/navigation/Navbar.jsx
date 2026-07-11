@@ -7,6 +7,7 @@ import { prefetchRoute } from "../../routes/AppRoutes.jsx";
 import { useNavigationContext } from "../../context/NavigationContext.jsx";
 import { useAnimationContext } from "../../context/AnimationContext.jsx";
 import { useRideComplete } from "../../hooks/useRideComplete.js";
+import { useRideSeen } from "../../hooks/useRideSeen.js";
 import { cn } from "../../utils/cn.js";
 import Logo from "../ui/Logo.jsx";
 import Button from "../ui/Button.jsx";
@@ -30,9 +31,10 @@ const Navbar = () => {
   const { animationsOn } = useAnimationContext();
   const { pathname } = useLocation();
   const rideDone = useRideComplete();
+  const rideSeen = useRideSeen();
 
   const curtain =
-    animationsOn && pathname === "/" && !rideDone && !isMenuOpen;
+    animationsOn && pathname === "/" && !rideSeen && !rideDone && !isMenuOpen;
 
   return (
     <>
