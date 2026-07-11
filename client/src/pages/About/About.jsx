@@ -79,8 +79,8 @@ const About = () => {
         viewport={viewportOnce}
         className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {values.map((v) => (
-          <motion.div key={v.title} variants={depthIn}>
+        {values.map((v, i) => (
+          <motion.div key={i} variants={depthIn}>
             <GlassPanel hover tilt className="h-full p-7">
               <div className="mb-5 grid size-12 place-items-center rounded-xl border border-lime/20 bg-green/10 text-lime">
                 <Icon name={v.icon} className="size-6" strokeWidth={1.9} />

@@ -85,8 +85,8 @@ const Courses = () => {
           viewport={viewportOnce}
           className="mt-14 grid gap-6 lg:grid-cols-3"
         >
-          {plans.map((plan) => (
-            <motion.div key={plan.name} variants={depthIn}>
+          {plans.map((plan, i) => (
+            <motion.div key={i} variants={depthIn}>
               <PricingCard plan={plan} />
             </motion.div>
           ))}

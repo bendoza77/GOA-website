@@ -20,8 +20,8 @@ const ImpactStats = () => {
         viewport={viewportOnce}
         className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {impactStats.map((s) => (
-          <motion.div key={s.label} variants={fadeUp}>
+        {impactStats.map((s, i) => (
+          <motion.div key={i} variants={fadeUp}>
             <StatCard {...s} className="text-center" />
           </motion.div>
         ))}

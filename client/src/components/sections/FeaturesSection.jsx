@@ -25,8 +25,8 @@ const FeaturesSection = () => {
       viewport={viewportOnce}
       className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {features.map((f) => (
-        <motion.div key={f.title} variants={fadeUp}>
+      {features.map((f, i) => (
+        <motion.div key={i} variants={fadeUp}>
           <FeatureCard {...f} />
         </motion.div>
       ))}

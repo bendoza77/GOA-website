@@ -40,8 +40,8 @@ const SuccessStories = () => {
         viewport={viewportOnce}
         className="grid gap-8 rounded-3xl border border-slate-line surface p-10 sm:grid-cols-2 lg:grid-cols-4"
       >
-        {heroStats.map((s) => (
-          <motion.div key={s.label} variants={scaleIn}>
+        {heroStats.map((s, i) => (
+          <motion.div key={i} variants={scaleIn}>
             <StatCard {...s} className="text-center" />
           </motion.div>
         ))}
