@@ -12,6 +12,7 @@ import PageLoader from "../components/loaders/PageLoader.jsx";
 const ROUTE_LOADERS = {
   "/": () => import("../pages/Home/Home.jsx"),
   "/about": () => import("../pages/About/About.jsx"),
+  "/services": () => import("../pages/Services/Services.jsx"),
   "/courses": () => import("../pages/Courses/Courses.jsx"),
   "/mentors": () => import("../pages/Mentors/Mentors.jsx"),
   "/community": () => import("../pages/Community/Community.jsx"),
@@ -47,6 +48,7 @@ export const prefetchAllRoutes = () => {
 
 const Home = lazy(ROUTE_LOADERS["/"]);
 const About = lazy(ROUTE_LOADERS["/about"]);
+const Services = lazy(ROUTE_LOADERS["/services"]);
 const Courses = lazy(ROUTE_LOADERS["/courses"]);
 const Mentors = lazy(ROUTE_LOADERS["/mentors"]);
 const Community = lazy(ROUTE_LOADERS["/community"]);
@@ -67,6 +69,7 @@ const AppRoutes = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/community" element={<Community />} />

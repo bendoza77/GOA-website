@@ -1,8 +1,35 @@
 /* ============================================================
    GOA · Typography
    Display: Space Grotesk  ·  Body: Inter  ·  Mono: JetBrains Mono
-   Fonts loaded via <link> in index.html for zero-flash rendering.
+   Latin fonts loaded via <link> in index.html for zero-flash rendering.
    ============================================================ */
+
+/* Georgian display face — BPG Nino Mtavruli (a titling/mtavruli script).
+   Bundled locally; Vite fingerprints the asset. Declaring the weight as a
+   range makes the single master cover 400–700 without synthetic bolding, so
+   headings stay clean. */
+@font-face {
+  font-family: "BPG Nino Mtavruli";
+  src: url("../assets/fonts/bpg_nino_mtavruli_normal.ttf") format("truetype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* When the page is Georgian (<html lang="ka">), the display family becomes
+   Nino Mtavruli. Latin glyphs (brand names, tech terms, numbers) fall through
+   per-glyph to the original Latin display stack, so mixed strings still look
+   right. Body copy deliberately stays on the sans stack — a mtavruli (caps)
+   face is a titling script, not a running-text face. */
+:root:lang(ka) {
+  --font-display: "BPG Nino Mtavruli", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Eyebrows/kickers are mono (no Georgian glyphs) — route them to the Georgian
+   display face too so they render in-script instead of a system fallback. */
+:lang(ka) .eyebrow {
+  font-family: var(--font-display);
+}
 
 .font-display { font-family: var(--font-display); }
 .font-sans    { font-family: var(--font-sans); }

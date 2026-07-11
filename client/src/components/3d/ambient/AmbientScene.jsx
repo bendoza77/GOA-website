@@ -19,6 +19,7 @@ import { cn } from "../../../utils/cn.js";
 /* Scene registry — each entry is its own code-split chunk. */
 const SCENES = {
   about: () => import("./scenes/aboutScene.js"),
+  services: () => import("./scenes/servicesScene.js"),
   courses: () => import("./scenes/coursesScene.js"),
   mentors: () => import("./scenes/mentorsScene.js"),
   community: () => import("./scenes/communityScene.js"),

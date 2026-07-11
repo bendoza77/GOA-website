@@ -18,6 +18,7 @@ export const TITLE_SUFFIX = "Goal-Oriented Academy";
 export const ROUTE_META_KEYS = {
   "/": "home",
   "/about": "about",
+  "/services": "services",
   "/courses": "courses",
   "/mentors": "mentors",
   "/community": "community",
@@ -33,6 +34,7 @@ export const ROUTE_META_KEYS = {
  */
 export const NAV_LINKS = [
   { key: "home", path: "/" },
+  { key: "services", path: "/services" },
   { key: "courses", path: "/courses" },
   { key: "mentors", path: "/mentors" },
   { key: "about", path: "/about" },

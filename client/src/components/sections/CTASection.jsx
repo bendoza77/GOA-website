@@ -15,6 +15,7 @@ import { viewportOnce } from "../../utils/motion.js";
  */
 const CTA_ROUTES = {
   default: { primary: "/contact", secondary: "/courses" },
+  services: { primary: "/contact", secondary: "/courses" },
   community: { primary: "/contact", secondary: "/events" },
   events: { primary: "/contact", secondary: "/courses" },
   mentors: { primary: "/contact", secondary: "/community" },

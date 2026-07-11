@@ -6,6 +6,7 @@
   },
   "nav": {
     "home": "Home",
+    "services": "Services",
     "courses": "Courses",
     "mentors": "Mentors",
     "about": "About",
@@ -32,6 +33,10 @@
     "about": {
       "title": "About",
       "description": "Our mission, values and the GOA journey — turning ambition into shipped software."
+    },
+    "services": {
+      "title": "Services",
+      "description": "Mentorship, cohorts, career coaching and code review — the full engineering support system, delivered end to end."
     },
     "courses": {
       "title": "Courses",
@@ -175,6 +180,13 @@
       "eyebrow": "Your turn",
       "title": "The next story on this page could be yours",
       "description": "Join a cohort, do the work, and let the outcome speak for itself. We'll be with you the whole way."
+    },
+    "services": {
+      "eyebrow": "Let's build it together",
+      "title": "Pick the support that fits, and start this week",
+      "description": "Whether it's one mentor or a whole team, we tailor the engagement to your goal and get you moving fast.",
+      "primary": "Book a call",
+      "secondary": "Browse courses"
     }
   },
   "about": {
@@ -209,6 +221,81 @@
       "title": "The GOA journey, end to end",
       "description": "A guided path from your first commit to a signed offer — you always know the next move."
     }
+  },
+  "servicesPage": {
+    "header": {
+      "eyebrow": "What we do",
+      "title": "Engineering support,",
+      "highlight": "engineered around you",
+      "description": "Beyond the curriculum: a full support system of mentorship, cohorts, coaching and reviews — designed to move you from where you are to shipped, hired and growing."
+    },
+    "grid": {
+      "eyebrow": "Services",
+      "title": "Six ways we get you shipping",
+      "description": "Mix and match the support you need. Every service is delivered by working engineers and mapped to a real outcome."
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "A guided path, engineered end to end",
+      "description": "Scroll through the four stages every engagement moves through — from first conversation to a launch you're proud of.",
+      "steps": [
+        { "name": "Discovery", "title": "We map where you are", "desc": "A deep-dive session to understand your goal, your level and the gap between them — no generic tracks, just your starting line." },
+        { "name": "Roadmap", "title": "We chart the fastest route", "desc": "A personalised plan of projects, milestones and mentor checkpoints, sequenced so every week compounds into visible progress." },
+        { "name": "Build & Ship", "title": "You build, we review", "desc": "Weekly real projects reviewed like production pull requests, with senior mentors unblocking you in hours, not days." },
+        { "name": "Launch & Grow", "title": "We open the next door", "desc": "Portfolio, interviews, referrals and a network that keeps working for you long after the engagement ends." }
+      ]
+    },
+    "deliverables": {
+      "eyebrow": "In every engagement",
+      "title": "The standards baked into everything we deliver",
+      "description": "No matter which service you choose, this is what you can count on.",
+      "items": [
+        { "title": "Senior mentorship", "desc": "Every review and session is led by an engineer who ships production software for a living." },
+        { "title": "Real, shippable work", "desc": "You leave with projects in your portfolio, not certificates of attendance." },
+        { "title": "48-hour reviews", "desc": "Feedback lands fast, so momentum never stalls waiting on us." },
+        { "title": "A lasting network", "desc": "Access to a global community and alumni that keeps opening doors." }
+      ]
+    }
+  },
+  "services": {
+    "items": [
+      {
+        "title": "1:1 Mentorship",
+        "tag": "Most personal",
+        "blurb": "A dedicated senior engineer in your corner — reviewing your code, unblocking you and holding you to the standard of the teams you want to join.",
+        "features": ["Weekly 1:1 sessions", "Async code review", "Personalised roadmap", "Accountability & goals"]
+      },
+      {
+        "title": "Cohort Bootcamps",
+        "tag": "Most popular",
+        "blurb": "Learn in a focused cohort that ships together. Structured sprints, live sessions and the momentum that only comes from building alongside peers.",
+        "features": ["12–28 week sprints", "Live build sessions", "Peer project reviews", "Cohort community"]
+      },
+      {
+        "title": "Career Coaching",
+        "tag": "Get hired",
+        "blurb": "Turn skills into offers. Portfolio polish, mock interviews, referrals and negotiation support until the contract is signed.",
+        "features": ["Portfolio & CV audit", "Mock interviews", "Warm referrals", "Offer negotiation"]
+      },
+      {
+        "title": "Code Review",
+        "tag": "Ship better",
+        "blurb": "Send us your pull requests and get senior-level feedback within 48 hours — architecture, performance, readability and the details that separate juniors from seniors.",
+        "features": ["48-hour turnaround", "Architecture guidance", "Performance notes", "Best-practice callouts"]
+      },
+      {
+        "title": "Team Training",
+        "tag": "For teams",
+        "blurb": "Level up your whole engineering org with a curriculum tailored to your stack, delivered around your roadmap with dashboards to prove the lift.",
+        "features": ["Custom curriculum", "Progress dashboards", "Dedicated success lead", "Volume licensing"]
+      },
+      {
+        "title": "Live Workshops",
+        "tag": "Hands-on",
+        "blurb": "Intensive, hands-on sessions on the topics that matter now — from design systems to AI agents — taught live and recorded for your team.",
+        "features": ["Live & recorded", "Hands-on labs", "Topic on demand", "Q&A with experts"]
+      }
+    ]
   },
   "coursesPage": {
     "header": {
