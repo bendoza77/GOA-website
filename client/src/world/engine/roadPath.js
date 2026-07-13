@@ -26,8 +26,11 @@ const ROAD_POINTS = [
 
 export const roadCurve = new CatmullRomCurve3(ROAD_POINTS, false, "catmullrom", 0.6);
 
-/** Curve parameters where the six course artifacts sit. */
-export const DOC_T = [0.2, 0.33, 0.46, 0.59, 0.72, 0.85];
+/** Curve parameters where the six course artifacts sit. Each is ~0.05 of
+ *  curve (≈4.5 world units) AHEAD of where the camera rides during that
+ *  course's scroll window, so the artifact assembles in frame and the
+ *  camera reaches it just as its chapter ends. */
+export const DOC_T = [0.25, 0.383, 0.516, 0.649, 0.782, 0.915];
 
 const SAMPLES = 512;
 const pos = new Float32Array((SAMPLES + 1) * 3);

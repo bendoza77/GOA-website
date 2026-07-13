@@ -125,6 +125,24 @@ export function createAtmosphere(ctx) {
     return { mesh, mat, data };
   });
 
+  /* ---- deep nebula — a vast, soft green glow far down the world's axis.
+     It gives the arrival void a horizon and every chapter a sense of
+     depth; it breathes slowly and dies with the finale warp. ---- */
+  const nebulaTex = makeGlowTexture(128);
+  const nebulaGeo = new PlaneGeometry(70, 42);
+  const nebulaMat = new MeshBasicMaterial({
+    map: nebulaTex,
+    color: new Color(PALETTE.deep),
+    transparent: true,
+    opacity: 0,
+    blending: AdditiveBlending,
+    depthWrite: false,
+  });
+  const nebula = new Mesh(nebulaGeo, nebulaMat);
+  nebula.position.set(0, 4, -105);
+  group.add(nebula);
+  track(nebulaTex, nebulaGeo, nebulaMat);
+
   /* ---- light rays — tall additive shafts leaning through the fog ---- */
   const rayTex = makeRayTexture();
   const rayGeo = new PlaneGeometry(2.6, 26);
@@ -191,6 +209,9 @@ export function createAtmosphere(ctx) {
 
       /* rays shimmer only — static transforms; opacity carries the life */
       rayMat.opacity = (0.1 + 0.06 * Math.sin(time * 0.5)) * dim * reveal * (1 - warp);
+
+      nebulaMat.opacity =
+        (0.16 + 0.05 * Math.sin(time * 0.33)) * dim * reveal * (1 - warp * 0.8);
     },
   };
 }

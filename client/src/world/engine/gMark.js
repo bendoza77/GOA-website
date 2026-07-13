@@ -134,8 +134,8 @@ export function createGMark(ctx) {
     update(f) {
       const { p, time, dim } = f;
       const assemble = sstep(p, gA, gA + (gB - gA) * 0.55);
-      const disperse = sstep(p, fA + 0.01, fA + 0.08);
-      const gone = disperse >= 1 && p > fA + 0.1;
+      const disperse = sstep(p, fA + 0.005, fA + 0.065);
+      const gone = disperse >= 1 && p > fA + 0.09;
 
       if (assemble <= 0.001 || gone) {
         group.visible = false;

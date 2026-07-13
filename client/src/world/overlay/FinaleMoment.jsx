@@ -19,13 +19,13 @@ const FinaleMoment = () => {
   const [a] = CHAPTERS.finale;
   const { scrollYProgress } = useScroll();
 
-  /* closing line while the world dissolves */
+  /* closing line once the monument has mostly returned to dust */
   const lineOpacity = useTransform(
     scrollYProgress,
-    [a + 0.01, a + 0.035, a + 0.075, a + 0.095],
+    [a + 0.035, a + 0.06, a + 0.095, a + 0.115],
     [0, 1, 1, 0]
   );
-  const lineY = useTransform(scrollYProgress, [a + 0.01, a + 0.035], [40, 0]);
+  const lineY = useTransform(scrollYProgress, [a + 0.035, a + 0.06], [40, 0]);
 
   /* the universe becomes a single green point… */
   const pointOpacity = useTransform(
