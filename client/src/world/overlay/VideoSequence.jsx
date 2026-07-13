@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useTransform, useMotionTemplate } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { videoWindow } from "../worldTimeline.js";
@@ -31,6 +31,12 @@ const VideoMoment = ({ index, src, caption, progress }) => {
   const span = b - a;
   const last = index === MOMENTS - 1;
   const videoRef = useRef(null);
+
+  /* The frame adopts the footage's NATIVE aspect ratio (read from metadata),
+     so landscape films get a wide screen and portrait clips a tall one —
+     nothing is ever cropped away. Sized against both axes: never wider than
+     the stage, never taller than 66vh (leaving air for the caption). */
+  const [ratio, setRatio] = useState(16 / 9);
 
   /* enter fast and clean; exit long and soft under the next moment */
   const inEnd = a + span * 0.3;
@@ -93,31 +99,37 @@ const VideoMoment = ({ index, src, caption, progress }) => {
         }}
       />
       <motion.div
-        style={{ filter }}
-        className="w-[min(78vw,58rem)] overflow-hidden rounded-2xl border border-neon/15 bg-black shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9),0_0_80px_-30px_rgba(47,191,95,0.45)]"
+        style={{
+          filter,
+          aspectRatio: String(ratio),
+          width: `min(78vw, 58rem, calc(66vh * ${ratio}))`,
+        }}
+        className="overflow-hidden rounded-2xl border border-neon/15 bg-black shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9),0_0_80px_-30px_rgba(47,191,95,0.45)]"
       >
-        <div className="aspect-video">
-          {src ? (
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              src={src}
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            />
-          ) : (
-            /* no footage bundled — a still cinematic wash keeps the beat */
-            <div
-              className="h-full w-full"
-              style={{
-                background:
-                  "radial-gradient(120% 90% at 50% 40%, #0a2418 0%, #04120b 55%, #010805 100%)",
-              }}
-            />
-          )}
-        </div>
+        {src ? (
+          <video
+            ref={videoRef}
+            className="h-full w-full object-cover"
+            src={src}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onLoadedMetadata={(e) => {
+              const { videoWidth, videoHeight } = e.currentTarget;
+              if (videoWidth && videoHeight) setRatio(videoWidth / videoHeight);
+            }}
+          />
+        ) : (
+          /* no footage bundled — a still cinematic wash keeps the beat */
+          <div
+            className="h-full w-full"
+            style={{
+              background:
+                "radial-gradient(120% 90% at 50% 40%, #0a2418 0%, #04120b 55%, #010805 100%)",
+            }}
+          />
+        )}
       </motion.div>
       <motion.p
         style={{ opacity: captionOpacity }}
