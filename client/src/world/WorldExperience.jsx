@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useAnimationContext } from "../context/AnimationContext.jsx";
 import { cn } from "../utils/cn.js";
 import { WORLD_VH } from "./worldTimeline.js";
+import PrologueRide from "./prologue/PrologueRide.jsx";
+import CubeAct from "./prologue/CubeAct.jsx";
 import WorldOverlay from "./overlay/WorldOverlay.jsx";
 import WorldHud from "./overlay/WorldHud.jsx";
 import WorldFallback from "./WorldFallback.jsx";
@@ -9,13 +11,19 @@ import WorldFallback from "./WorldFallback.jsx";
 /**
  * WorldExperience — the site. Not a page: a journey.
  *
- * Three layers, one timeline:
- *   1. a fixed canvas running the WorldEngine (the universe itself)
- *   2. a tall, empty scroll runway (WORLD_VH) — the story's length
- *   3. a fixed DOM overlay speaking the copy at the right scroll windows
+ * One scroll, three acts:
+ *   PROLOGUE 1 — the original 3D ride: holographic laptop → portal burst →
+ *                code universe → AI core → learning pathway → exit gate
+ *   PROLOGUE 2 — the hero cube falls in, reveals all six faces, then
+ *                releases upward into the universe
+ *   THE WORLD — the moment the cube's rotation ends and scrolling
+ *               continues, the arrival chapter begins: the energy road,
+ *               the course artifacts, the story, the films, the cube-G
+ *               monument and the dissolving finale
  *
- * The engine chunk (three.js) loads during idle after first paint, behind
- * the intro loader, and the canvas cross-fades in once live — no pop-in.
+ * Each act has its own engine on its own fixed canvas; sleep guards make
+ * sure only the act that owns the frame burns GPU time. Every chunk loads
+ * during idle behind the intro loader and cross-fades in — no pop-in.
  * With animations off (prefers-reduced-motion or the user toggle) the whole
  * journey is replaced by a calm, static narrative of the same story.
  */
@@ -68,7 +76,8 @@ const WorldStage = () => {
 
   return (
     <>
-      {/* layer 1 — the universe */}
+      {/* the world's universe — asleep (transparent) until the prologue
+          hands over the frame */}
       <canvas
         ref={canvasRef}
         aria-hidden="true"
@@ -77,9 +86,15 @@ const WorldStage = () => {
           ready ? "opacity-100" : "opacity-0"
         )}
       />
-      {/* layer 2 — the journey's length */}
+
+      {/* prologue act one — the ride (canvas + its 700vh runway) */}
+      <PrologueRide />
+      {/* prologue act two — the cube (canvas + its 300vh runway) */}
+      <CubeAct />
+
+      {/* the world's runway */}
       <div aria-hidden="true" style={{ height: `${WORLD_VH}vh` }} />
-      {/* layer 3 — the words + the only chrome */}
+      {/* the words + the only chrome */}
       <WorldOverlay />
       <WorldHud />
     </>

@@ -6,7 +6,15 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
-import { CHAPTERS, courseWindow, COURSE_COUNT, sstep, bell } from "../worldTimeline.js";
+import {
+  CHAPTERS,
+  courseWindow,
+  COURSE_COUNT,
+  PROLOGUE_VH,
+  WORLD_VH,
+  sstep,
+  bell,
+} from "../worldTimeline.js";
 import { samplePoint, sampleTangent, docAnchor } from "./roadPath.js";
 import { createAtmosphere } from "./atmosphere.js";
 import { createRoad } from "./road.js";
@@ -121,15 +129,16 @@ export class WorldEngine {
       window.addEventListener("pointermove", this._onPointer, { passive: true });
     }
 
+    /* The world's timeline starts where the prologue (ride + cube) ends and
+       spans the rest of the document. All runway heights are vh-based, so a
+       resize is fully handled by remeasuring against innerHeight. */
     this._measure = () => {
-      this.maxScroll = Math.max(
-        document.documentElement.scrollHeight - window.innerHeight,
-        1
-      );
+      const vh = window.innerHeight;
+      this._worldStart = (PROLOGUE_VH / 100) * vh;
+      this._worldSpan = Math.max(((WORLD_VH - 100) / 100) * vh, 1);
     };
     this._measure();
-    this._ro = new ResizeObserver(this._measure);
-    this._ro.observe(document.body);
+    this._asleep = false;
 
     this._tick = this._tick.bind(this);
   }
@@ -228,6 +237,17 @@ export class WorldEngine {
     if (this.disposed) return;
     this._raf = requestAnimationFrame(this._tick);
 
+    /* asleep while the prologue owns the frame — wake just before handoff */
+    if (window.scrollY < this._worldStart - window.innerHeight * 1.5) {
+      if (!this._asleep) {
+        this.renderer.clear();
+        this._asleep = true;
+      }
+      this.lastT = now;
+      return;
+    }
+    this._asleep = false;
+
     const dt = Math.min((now - this.lastT) / 1000, 0.05);
     this.lastT = now;
     this.time += dt;
@@ -236,7 +256,11 @@ export class WorldEngine {
     const time = this.time;
 
     /* master timeline — damped so fast scrolling still glides */
-    const target = MathUtils.clamp(window.scrollY / this.maxScroll, 0, 1);
+    const target = MathUtils.clamp(
+      (window.scrollY - this._worldStart) / this._worldSpan,
+      0,
+      1
+    );
     this.progress = MathUtils.damp(this.progress, target, 4.2, dt);
     const p = this.progress;
     this.px = MathUtils.damp(this.px, this._tpx, 3.5, dt);
@@ -289,7 +313,6 @@ export class WorldEngine {
     cancelAnimationFrame(this._raf);
     window.removeEventListener("resize", this._onResize);
     window.removeEventListener("pointermove", this._onPointer);
-    this._ro.disconnect();
     for (const item of this._disposables) item.dispose?.();
     this.renderer.dispose();
   }

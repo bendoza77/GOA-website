@@ -1,6 +1,7 @@
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { LogoMark } from "../../components/ui/Logo.jsx";
 import LanguageToggle from "../../components/ui/LanguageToggle.jsx";
+import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
  * WorldHud — the only persistent interface in the universe.
@@ -10,11 +11,13 @@ import LanguageToggle from "../../components/ui/LanguageToggle.jsx";
  * loader clears and stays whisper-quiet: no navigation, no chrome.
  */
 const WorldHud = () => {
+  /* the beam tracks the WHOLE journey — prologue ride, cube and world */
   const { scrollYProgress } = useScroll();
   const beam = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
-  /* the cue dissolves on first travel; the HUD dims out at the very end */
-  const cueOpacity = useTransform(scrollYProgress, [0, 0.012], [1, 0]);
-  const hudOpacity = useTransform(scrollYProgress, [0.955, 0.985], [1, 0]);
+  /* the cue dissolves on first travel; the HUD dims out at the world's end */
+  const cueOpacity = useTransform(scrollYProgress, [0, 0.008], [1, 0]);
+  const worldProgress = useWorldProgress();
+  const hudOpacity = useTransform(worldProgress, [0.955, 0.985], [1, 0]);
 
   return (
     <motion.header style={{ opacity: hudOpacity }} className="fixed inset-x-0 top-0 z-40">

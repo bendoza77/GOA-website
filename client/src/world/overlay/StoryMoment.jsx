@@ -1,11 +1,7 @@
-import {
-  cubicBezier,
-  motion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { cubicBezier, motion, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { CHAPTERS } from "../worldTimeline.js";
+import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
  * StoryMoment — the emotional centre of the journey.
@@ -25,30 +21,30 @@ const StoryMoment = () => {
   const [a, b] = CHAPTERS.story;
   const span = b - a;
 
-  const { scrollYProgress } = useScroll();
+  const progress = useWorldProgress();
 
   /* line one: descends from the top, brakes into the centre */
   const l1In = [a + span * 0.06, a + span * 0.4];
-  const line1Y = useTransform(scrollYProgress, l1In, ["-42vh", "0vh"], { ease: easeHeavy });
+  const line1Y = useTransform(progress, l1In, ["-42vh", "0vh"], { ease: easeHeavy });
   const line1Opacity = useTransform(
-    scrollYProgress,
+    progress,
     [l1In[0], l1In[1], b - span * 0.12, b],
     [0, 1, 1, 0]
   );
 
   /* line two: a beat later, rising softly underneath */
   const l2In = [a + span * 0.52, a + span * 0.72];
-  const line2Y = useTransform(scrollYProgress, l2In, ["6vh", "0vh"], { ease: easeHeavy });
+  const line2Y = useTransform(progress, l2In, ["6vh", "0vh"], { ease: easeHeavy });
   const line2Opacity = useTransform(
-    scrollYProgress,
+    progress,
     [l2In[0], l2In[1], b - span * 0.12, b],
     [0, 1, 1, 0]
   );
-  const line2Scale = useTransform(scrollYProgress, l2In, [0.94, 1], { ease: easeHeavy });
+  const line2Scale = useTransform(progress, l2In, [0.94, 1], { ease: easeHeavy });
 
   /* supporting darkness — a soft radial vignette closing around the words */
   const veil = useTransform(
-    scrollYProgress,
+    progress,
     [a, a + span * 0.3, b - span * 0.1, b],
     [0, 0.75, 0.75, 0]
   );

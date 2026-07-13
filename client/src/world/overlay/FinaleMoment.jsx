@@ -1,8 +1,9 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { LogoMark } from "../../components/ui/Logo.jsx";
 import { useCursor } from "../../hooks/useCursor.js";
 import { CHAPTERS } from "../worldTimeline.js";
+import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
  * FinaleMoment — the last light of the journey.
@@ -17,30 +18,30 @@ const FinaleMoment = () => {
   const { t } = useTranslation();
   const { cursorProps } = useCursor();
   const [a] = CHAPTERS.finale;
-  const { scrollYProgress } = useScroll();
+  const progress = useWorldProgress();
 
   /* closing line once the monument has mostly returned to dust */
   const lineOpacity = useTransform(
-    scrollYProgress,
+    progress,
     [a + 0.035, a + 0.06, a + 0.095, a + 0.115],
     [0, 1, 1, 0]
   );
-  const lineY = useTransform(scrollYProgress, [a + 0.035, a + 0.06], [40, 0]);
+  const lineY = useTransform(progress, [a + 0.035, a + 0.06], [40, 0]);
 
   /* the universe becomes a single green point… */
   const pointOpacity = useTransform(
-    scrollYProgress,
+    progress,
     [0.9, 0.93, 0.975, 0.988],
     [0, 1, 1, 0]
   );
-  const pointScale = useTransform(scrollYProgress, [0.9, 0.94, 0.985], [2.8, 1.4, 0.12]);
+  const pointScale = useTransform(progress, [0.9, 0.94, 0.985], [2.8, 1.4, 0.12]);
 
   /* …then black */
-  const blackout = useTransform(scrollYProgress, [0.955, 0.985], [0, 1]);
+  const blackout = useTransform(progress, [0.955, 0.985], [0, 1]);
 
   /* …then the quiet ending */
-  const endOpacity = useTransform(scrollYProgress, [0.985, 0.998], [0, 1]);
-  const endY = useTransform(scrollYProgress, [0.985, 0.998], [24, 0]);
+  const endOpacity = useTransform(progress, [0.985, 0.998], [0, 1]);
+  const endY = useTransform(progress, [0.985, 0.998], [24, 0]);
 
   const travelAgain = () => {
     if (window.__lenis) window.__lenis.scrollTo(0, { duration: 3.2 });

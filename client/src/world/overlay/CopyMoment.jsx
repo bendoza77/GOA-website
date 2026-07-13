@@ -1,5 +1,6 @@
-import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useTransform, useMotionTemplate } from "framer-motion";
 import { cn } from "../../utils/cn.js";
+import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
  * CopyMoment — a piece of cinematic typography bound to a scroll window.
@@ -34,10 +35,10 @@ const CopyMoment = ({
   const inEnd = a + span * enter;
   const outStart = b - span * exit;
 
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [a, inEnd, outStart, b], [0, 1, 1, 0]);
-  const y = useTransform(scrollYProgress, [a, inEnd, outStart, b], [56, 0, 0, -44]);
-  const blurPx = useTransform(scrollYProgress, [a, inEnd, outStart, b], [10, 0, 0, 8]);
+  const progress = useWorldProgress();
+  const opacity = useTransform(progress, [a, inEnd, outStart, b], [0, 1, 1, 0]);
+  const y = useTransform(progress, [a, inEnd, outStart, b], [56, 0, 0, -44]);
+  const blurPx = useTransform(progress, [a, inEnd, outStart, b], [10, 0, 0, 8]);
   const filter = useMotionTemplate`blur(${blurPx}px)`;
 
   return (

@@ -1,12 +1,8 @@
 import { useEffect, useRef } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionTemplate,
-} from "framer-motion";
+import { motion, useTransform, useMotionTemplate } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { videoWindow } from "../worldTimeline.js";
+import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
  * VideoSequence — the film chapter. Three floating screens, one at a time.
@@ -30,7 +26,7 @@ const SOURCES = Object.values(
 
 const MOMENTS = 3;
 
-const VideoMoment = ({ index, src, caption, scrollYProgress }) => {
+const VideoMoment = ({ index, src, caption, progress }) => {
   const [a, b] = videoWindow(index, MOMENTS);
   const span = b - a;
   const last = index === MOMENTS - 1;
@@ -40,25 +36,25 @@ const VideoMoment = ({ index, src, caption, scrollYProgress }) => {
   const inEnd = a + span * 0.3;
   const outEnd = last ? b + span * 0.18 : b + span * 0.45;
   const opacity = useTransform(
-    scrollYProgress,
+    progress,
     [a, inEnd, b - span * 0.05, last ? b : b + span * 0.2, outEnd],
     [0, 1, 1, last ? 0.4 : 0.28, 0]
   );
-  const y = useTransform(scrollYProgress, [a, inEnd, outEnd], ["16vh", "0vh", "-9vh"]);
-  const scale = useTransform(scrollYProgress, [a, inEnd, outEnd], [0.9, 1, 1.06]);
+  const y = useTransform(progress, [a, inEnd, outEnd], ["16vh", "0vh", "-9vh"]);
+  const scale = useTransform(progress, [a, inEnd, outEnd], [0.9, 1, 1.06]);
   const blurPx = useTransform(
-    scrollYProgress,
+    progress,
     [a, a + span * 0.26, b - span * 0.05, outEnd],
     [14, 0, 0, 12]
   );
   const bright = useTransform(
-    scrollYProgress,
+    progress,
     [a, inEnd, b - span * 0.05, outEnd],
     [0.6, 1, 1, 0.35]
   );
   const filter = useMotionTemplate`blur(${blurPx}px) brightness(${bright})`;
   const captionOpacity = useTransform(
-    scrollYProgress,
+    progress,
     [a + span * 0.18, a + span * 0.38, b - span * 0.18, b],
     [0, 1, 1, 0]
   );
@@ -78,9 +74,9 @@ const VideoMoment = ({ index, src, caption, scrollYProgress }) => {
         v.pause();
       }
     };
-    drive(scrollYProgress.get());
-    return scrollYProgress.on("change", drive);
-  }, [scrollYProgress, a, span, outEnd]);
+    drive(progress.get());
+    return progress.on("change", drive);
+  }, [progress, a, span, outEnd]);
 
   return (
     <motion.div
@@ -135,7 +131,7 @@ const VideoMoment = ({ index, src, caption, scrollYProgress }) => {
 
 const VideoSequence = () => {
   const { t } = useTranslation();
-  const { scrollYProgress } = useScroll();
+  const progress = useWorldProgress();
   const captions = t("world.videos", { returnObjects: true });
 
   return (
@@ -149,7 +145,7 @@ const VideoSequence = () => {
           index={i}
           src={SOURCES.length ? SOURCES[i % SOURCES.length] : null}
           caption={Array.isArray(captions) ? captions[i]?.caption : ""}
-          scrollYProgress={scrollYProgress}
+          progress={progress}
         />
       ))}
     </div>

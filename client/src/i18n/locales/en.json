@@ -559,6 +559,10 @@
       "title": "Every future is built one line at a time.",
       "sub": "Follow the energy. It already knows the way."
     },
+    "cube": {
+      "captionA": "A place where everyone is",
+      "captionB": "each other's friend"
+    },
     "coursesEyebrow": "Artifact",
     "courses": [
       { "line": "Craft interfaces the world can feel." },

@@ -10,8 +10,34 @@
  * All windows are fractions of total scroll progress (0..1).
  */
 
-/** Total scroll runway in viewport-heights. The world spans exactly this. */
+/* ------------------------------------------------------------------ *
+ *  PROLOGUE — the original opening acts, playing before the world:    *
+ *  the pure-3D ride (laptop → portal → code universe → AI core →      *
+ *  pathway → exit gate) and then the hero cube's fall + face reveal.  *
+ *  The world's chapters all start AFTER this runway.                  *
+ * ------------------------------------------------------------------ */
+
+/** Ride runway in viewport-heights (the ride story completes at RIDE_STORY_VH
+ *  and holds its finale for the remainder, handing over to the cube). */
+export const RIDE_VH = 700;
+export const RIDE_STORY_VH = 6;
+
+/** Cube act runway: fall → full face reveal → release into the universe. */
+export const CUBE_VH = 300;
+
+export const PROLOGUE_VH = RIDE_VH + CUBE_VH;
+
+/** World scroll runway in viewport-heights (after the prologue). */
 export const WORLD_VH = 1500;
+
+/** Full document height in viewport-heights. */
+export const TOTAL_VH = PROLOGUE_VH + WORLD_VH;
+
+/* World-space progress in document-scroll fractions: the document scrolls
+   (TOTAL_VH - 100) viewport-heights; the world occupies the stretch from the
+   end of the prologue to the end of the page. Heights are all vh-based, so
+   these fractions are viewport-independent. */
+export const WORLD_OFFSET_FRAC = PROLOGUE_VH / (TOTAL_VH - 100);
 
 /** Number of course artifacts along the digital road. */
 export const COURSE_COUNT = 6;
