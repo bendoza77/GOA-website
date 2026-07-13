@@ -547,5 +547,44 @@
     "description": "The page you're after moved, shipped, or never existed. Let's get you back to solid ground.",
     "backHome": "Back home",
     "browseCourses": "Browse courses"
+  },
+  "world": {
+    "arrival": {
+      "eyebrow": "Goal-Oriented Academy",
+      "title": "You have entered the world of GOA.",
+      "sub": "A living digital universe, built for the ones who build. Scroll — the world moves with you."
+    },
+    "road": {
+      "eyebrow": "The road",
+      "title": "Every future is built one line at a time.",
+      "sub": "Follow the energy. It already knows the way."
+    },
+    "coursesEyebrow": "Artifact",
+    "courses": [
+      { "line": "Craft interfaces the world can feel." },
+      { "line": "Command every layer of the machine." },
+      { "line": "Teach machines to think alongside you." },
+      { "line": "Ship at the speed of thought." },
+      { "line": "Put your work in every pocket on Earth." },
+      { "line": "Master the patterns behind every locked door." }
+    ],
+    "story": {
+      "line1": "This is not GOA's story.",
+      "line2": "Our story."
+    },
+    "videos": [
+      { "caption": "Real people. Real momentum." },
+      { "caption": "Built together. Shipped together." },
+      { "caption": "This is how futures are made." }
+    ],
+    "g": {
+      "eyebrow": "One mark",
+      "title": "Thousands of us. One direction."
+    },
+    "finale": {
+      "line1": "The road ends where your story begins.",
+      "end": "Your story begins now.",
+      "cta": "Travel again"
+    }
   }
 }

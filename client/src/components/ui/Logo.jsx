@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
 import { cn } from "../../utils/cn.js";
 
 /**
- * Logo — GOA pixel mark + wordmark.
- * The mark recreates the blocky, matrix-grid spirit of the brand logo with an
- * SVG pixel grid (a stylised "G"). Pure vector, scales crisply, no asset load.
+ * LogoMark — the GOA pixel mark. Recreates the blocky, matrix-grid spirit of
+ * the brand logo with an SVG pixel grid (a stylised "G"). Pure vector,
+ * scales crisply, no asset load. The same pixel map drives the 3D cube
+ * monument in the world engine (world/engine/gMark.js).
  */
 
 // 6x6 pixel map for a blocky "G". 1 = filled.
@@ -51,28 +51,4 @@ export const LogoMark = ({ className, size = 34 }) => (
   </svg>
 );
 
-const Logo = ({ className, showText = true, size = 34, onClick }) => (
-  <Link
-    to="/"
-    onClick={onClick}
-    aria-label="Goal-Oriented Academy — home"
-    className={cn(
-      "group inline-flex items-center gap-2.5 font-display font-bold tracking-tight",
-      className
-    )}
-  >
-    <span className="relative grid place-items-center transition-transform duration-500 group-hover:rotate-6">
-      <LogoMark size={size} className="drop-shadow-[0_0_12px_rgba(125,255,158,0.35)]" />
-    </span>
-    {showText && (
-      <span className="text-lg leading-none">
-        <span className="text-snow">GOA</span>
-        <span className="ml-1 hidden text-fog font-mono text-[0.6rem] font-normal tracking-[0.2em] sm:inline">
-          ACADEMY
-        </span>
-      </span>
-    )}
-  </Link>
-);
-
-export default Logo;
+export default LogoMark;

@@ -7,10 +7,10 @@
     <meta name="theme-color" content="#030603" />
     <meta
       name="description"
-      content="Goal-Oriented Academy — a premium programming academy engineering the next generation of developers. Courses, mentors, community, and real outcomes."
+      content="Goal-Oriented Academy — enter a living digital world. One continuous journey through the courses, the story and the community engineering the next generation of developers."
     />
-    <meta property="og:title" content="Goal-Oriented Academy — Level up. Ship code. Get hired." />
-    <meta property="og:description" content="A modern, immersive programming academy. Learn by building." />
+    <meta property="og:title" content="Goal-Oriented Academy — Enter the world" />
+    <meta property="og:description" content="Not a website. A living digital universe. Scroll to travel." />
     <meta property="og:type" content="website" />
 
     <!-- Fonts — loaded async so the CSS fetch never blocks first paint;
@@ -18,10 +18,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Spline scene CDN — warm the TLS handshake early; the .splinecode
-         itself is fetched lazily (idle warmup / near-viewport). -->
-    <link rel="preconnect" href="https://prod.spline.design" crossorigin />
-    <link rel="dns-prefetch" href="https://prod.spline.design" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
@@ -35,24 +31,11 @@
       />
     </noscript>
 
-    <title>Goal-Oriented Academy — Engineer your future</title>
+    <title>Goal-Oriented Academy — Enter the world</title>
 
-    <!-- Set theme before first paint to avoid a flash of the wrong mode -->
+    <!-- The world is dark by design — deep space, green light. -->
     <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("goa-theme");
-          var theme =
-            stored === "light" || stored === "dark"
-              ? stored
-              : window.matchMedia("(prefers-color-scheme: light)").matches
-              ? "light"
-              : "dark";
-          document.documentElement.setAttribute("data-theme", theme);
-        } catch (e) {
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
-      })();
+      document.documentElement.setAttribute("data-theme", "dark");
     </script>
 
     <!-- Set <html lang> before first paint to match the saved language -->
