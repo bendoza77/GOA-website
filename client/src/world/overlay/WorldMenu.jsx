@@ -95,7 +95,8 @@ const WorldMenu = () => {
                     role="dialog"
                     aria-modal="true"
                     aria-label={t("world.menu.title")}
-                    className="fixed inset-y-0 right-0 z-[81] flex w-[min(92vw,27rem)] flex-col border-l border-[color:var(--hairline)] bg-ink/90 px-8 py-7 backdrop-blur-2xl sm:px-10"
+                    data-lenis-prevent
+                    className="fixed inset-y-0 right-0 z-[81] flex w-[min(92vw,27rem)] flex-col overflow-y-auto overscroll-contain border-l border-[color:var(--hairline)] bg-ink/90 px-8 py-7 backdrop-blur-2xl sm:px-10"
                     initial={{ x: "104%" }}
                     animate={{ x: 0 }}
                     exit={{ x: "104%" }}
@@ -164,7 +165,12 @@ const WorldMenu = () => {
                   role="dialog"
                   aria-modal="true"
                   aria-label={t(`world.menu.items.${page}`)}
-                  className="fixed inset-0 z-[82] overflow-y-auto bg-void/95 backdrop-blur-xl"
+                  /* Lenis owns (and, while stopped, cancels) every wheel event
+                     on the page — this attribute tells it to keep its hands
+                     off events that start inside the panel, so the panel's
+                     own overflow scrolling works natively. */
+                  data-lenis-prevent
+                  className="fixed inset-0 z-[82] overflow-y-auto overscroll-contain bg-void/95 backdrop-blur-xl"
                   initial={{ x: "100%" }}
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
