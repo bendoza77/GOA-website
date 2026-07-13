@@ -589,6 +589,75 @@
       "line1": "The road ends where your story begins.",
       "end": "Your story begins now.",
       "cta": "Travel again"
+    },
+    "menu": {
+      "open": "Menu",
+      "close": "Close",
+      "back": "Back",
+      "title": "Explore",
+      "items": {
+        "services": "Services",
+        "privacy": "Privacy & Policy",
+        "terms": "Terms"
+      }
+    },
+    "pages": {
+      "services": {
+        "title": "Six ways we get you shipping",
+        "lead": "Beyond the journey: mentorship, cohorts, coaching and reviews — every service delivered by working engineers and mapped to a real outcome."
+      },
+      "privacy": {
+        "title": "Privacy & Policy",
+        "updated": "Last updated · July 2026",
+        "sections": [
+          {
+            "h": "What we collect",
+            "p": "Only what the journey needs: your name and contact details when you enrol or write to us, your learning progress inside a cohort, and the language you prefer this site in. We never collect more than we use."
+          },
+          {
+            "h": "How we use it",
+            "p": "To run your cohort, match you with the right mentors, track your progress toward your goal and keep you informed about your programme. Your data is never sold and never shared with third parties for advertising."
+          },
+          {
+            "h": "Cookies & analytics",
+            "p": "This site stores your language preference locally and uses privacy-friendly, aggregated analytics to understand how the experience performs. No cross-site tracking, no advertising cookies."
+          },
+          {
+            "h": "Your rights",
+            "p": "You can request a copy of your data, correct it, or ask us to delete it entirely at any time — one message is enough. We respond within one business day."
+          },
+          {
+            "h": "Security",
+            "p": "Your data is encrypted in transit and at rest, access inside GOA is limited to the people who need it to support you, and we review our practices with every cohort."
+          }
+        ]
+      },
+      "terms": {
+        "title": "Terms of Service",
+        "updated": "Last updated · July 2026",
+        "sections": [
+          {
+            "h": "The agreement",
+            "p": "By using this site or enrolling in a Goal-Oriented Academy programme you accept these terms. They exist to keep the experience fair, safe and honest for every learner."
+          },
+          {
+            "h": "Enrolment & payment",
+            "p": "A seat in a cohort is confirmed on payment or an agreed instalment plan. If GOA isn't the right fit, our 14-day, no-questions-asked guarantee applies: you get a full refund."
+          },
+          {
+            "h": "Your work",
+            "p": "Everything you build during a programme belongs to you. With your permission — and only with your permission — we may showcase your projects as part of the GOA story."
+          },
+          {
+            "h": "Community standards",
+            "p": "GOA is a place where everyone is each other's friend. Respect is non-negotiable: no harassment, no discrimination, no plagiarism. Breaking this breaks your seat."
+          },
+          {
+            "h": "Our promise, honestly framed",
+            "p": "We commit to mentorship, reviews and career support of the highest standard we can deliver. Educational outcomes depend on your work too; job-guarantee terms are defined separately in eligible programmes."
+          }
+        ]
+      }
     }
   }
 }

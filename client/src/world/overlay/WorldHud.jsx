@@ -1,6 +1,7 @@
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { LogoMark } from "../../components/ui/Logo.jsx";
 import LanguageToggle from "../../components/ui/LanguageToggle.jsx";
+import WorldMenu from "./WorldMenu.jsx";
 import { useWorldProgress } from "./useWorldProgress.js";
 
 /**
@@ -36,7 +37,10 @@ const WorldHud = () => {
             </span>
           </span>
         </span>
-        <LanguageToggle className="pointer-events-auto" />
+        <div className="pointer-events-auto flex items-center gap-3">
+          <LanguageToggle />
+          <WorldMenu />
+        </div>
       </motion.div>
 
       {/* journey beam — a hairline of energy tracking progress through the world */}

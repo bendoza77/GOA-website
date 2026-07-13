@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { LogoMark } from "../components/ui/Logo.jsx";
 import LanguageToggle from "../components/ui/LanguageToggle.jsx";
+import WorldMenu from "./overlay/WorldMenu.jsx";
 
 /**
  * WorldFallback — the journey, told still.
@@ -23,7 +24,10 @@ const WorldFallback = () => {
           <LogoMark size={34} />
           <span className="text-lg text-snow">GOA</span>
         </span>
-        <LanguageToggle />
+        <div className="flex items-center gap-3">
+          <LanguageToggle />
+          <WorldMenu />
+        </div>
       </header>
 
       <section className="flex flex-col gap-4">
